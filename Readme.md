@@ -1,7 +1,8 @@
 # Trabalho - POO: Bad IceCream
 
 ## Estrutura do Projeto
-'''tree
+
+```tree
 PrototipoProjetoPOO2025/
 ├── src/
 │   ├── Main.java                 # Ponto de entrada da aplicação
@@ -24,4 +25,4 @@ PrototipoProjetoPOO2025/
 │   ├── Fruit_1.png               # Sprite da fruta
 │   ├── Ice_BG.png                # Tile de fundo
 │   └── fire.png                  # Sprite do fogo
-'''
+```
