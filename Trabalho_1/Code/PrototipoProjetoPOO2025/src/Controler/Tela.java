@@ -1,14 +1,13 @@
 package Controler;
 
-import Modelo.Personagem;
-import Modelo.Caveira;
-import Modelo.Hero;
-import Modelo.BichinhoVaiVemHorizontal;
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
+import Modelo.BichinhoVaiVemHorizontal;
+import Modelo.Caveira;
+import Modelo.Hero;
+import Modelo.Personagem;
 import Modelo.ZigueZague;
 import auxiliar.Posicao;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -16,20 +15,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-import javax.swing.JButton;
 
 public class Tela extends javax.swing.JFrame implements MouseListener, KeyListener {
 
@@ -55,7 +46,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         faseAtual = new ArrayList<Personagem>();
 
         /*Cria faseAtual adiciona personagens*/
-        hero = new Hero("skoot.png");
+        hero = new Hero("Char_1.png");
         hero.setPosicao(0, 7);
         this.addPersonagem(hero);
         this.atualizaCamera();
@@ -64,15 +55,15 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         zz.setPosicao(5, 5);
         this.addPersonagem(zz);
 
-        BichinhoVaiVemHorizontal bBichinhoH = new BichinhoVaiVemHorizontal("roboPink.png");
+        BichinhoVaiVemHorizontal bBichinhoH = new BichinhoVaiVemHorizontal("Fruit_1.png");
         bBichinhoH.setPosicao(3, 3);
         this.addPersonagem(bBichinhoH);
 
-        BichinhoVaiVemHorizontal bBichinhoH2 = new BichinhoVaiVemHorizontal("roboPink.png");
+        BichinhoVaiVemHorizontal bBichinhoH2 = new BichinhoVaiVemHorizontal("Fruit_1.png");
         bBichinhoH2.setPosicao(6, 6);
         this.addPersonagem(bBichinhoH2);
 
-        Caveira bV = new Caveira("caveira.png");
+        Caveira bV = new Caveira("Villan_1.png");
         bV.setPosicao(9, 1);
         this.addPersonagem(bV);
     }
@@ -116,7 +107,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                 if (mapaLinha < Consts.MUNDO_ALTURA && mapaColuna < Consts.MUNDO_LARGURA) {
                     try {
                         Image newImage = Toolkit.getDefaultToolkit().getImage(
-                                new java.io.File(".").getCanonicalPath() + Consts.PATH + "bricks.png");
+                                new java.io.File(".").getCanonicalPath() + Consts.PATH + "Ice_BG.png");
                         g2.drawImage(newImage,
                                 j * Consts.CELL_SIDE, i * Consts.CELL_SIDE,
                                 Consts.CELL_SIDE, Consts.CELL_SIDE, null);

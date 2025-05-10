@@ -2,17 +2,13 @@ package Modelo;
 
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
-import Controler.Tela;
 import auxiliar.Posicao;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 public abstract class Personagem implements Serializable {
 
@@ -29,9 +25,24 @@ public abstract class Personagem implements Serializable {
         try {
             iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + sNomeImagePNG);
             Image img = iImage.getImage();
-            BufferedImage bi = new BufferedImage(Consts.CELL_SIDE, Consts.CELL_SIDE, BufferedImage.TYPE_INT_ARGB);
+            int originalWidth = img.getWidth(null);
+            int originalHeight = img.getHeight(null);
+            double aspectRatio = (double) originalWidth / originalHeight;
+
+            int newWidth, newHeight;
+            if (aspectRatio > 1) {
+                // Image is wider than tall
+                newWidth = Consts.CELL_SIDE;
+                newHeight = (int) (Consts.CELL_SIDE / aspectRatio);
+            } else {
+                // Image is taller than wide
+                newHeight = Consts.CELL_SIDE;
+                newWidth = (int) (Consts.CELL_SIDE * aspectRatio);
+            }
+
+            BufferedImage bi = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
             Graphics g = bi.createGraphics();
-            g.drawImage(img, 0, 0, Consts.CELL_SIDE, Consts.CELL_SIDE, null);
+            g.drawImage(img, 0, 0, newWidth, newHeight, null);
             iImage = new ImageIcon(bi);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
