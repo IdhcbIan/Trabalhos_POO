@@ -2,11 +2,10 @@ package Controler;
 
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
-import Modelo.BichinhoVaiVemHorizontal;
-import Modelo.Caveira;
+import Modelo.Fruta;
 import Modelo.Hero;
 import Modelo.Personagem;
-import Modelo.ZigueZague;
+import Modelo.SuccessoNotification;
 import auxiliar.Posicao;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -34,15 +33,17 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     public Tela() {
         Desenho.setCenario(this);
         initComponents();
-        this.addMouseListener(this);
-        /*mouse*/
-
-        this.addKeyListener(this);
-        /*teclado*/
- /*Cria a janela do tamanho do tabuleiro + insets (bordas) da janela*/
+        
+        // Set size before creating buffer strategy
         this.setSize(Consts.RES * Consts.CELL_SIDE + getInsets().left + getInsets().right,
                 Consts.RES * Consts.CELL_SIDE + getInsets().top + getInsets().bottom);
-
+        
+        this.setVisible(true); // Make sure it's visible before creating buffer strategy
+        this.createBufferStrategy(2);
+        
+        this.addMouseListener(this);
+        this.addKeyListener(this);
+        
         faseAtual = new ArrayList<Personagem>();
 
         /*Cria faseAtual adiciona personagens*/
@@ -51,21 +52,13 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         this.addPersonagem(hero);
         this.atualizaCamera();
 
-        ZigueZague zz = new ZigueZague("robo.png");
-        zz.setPosicao(5, 5);
-        this.addPersonagem(zz);
-
-        BichinhoVaiVemHorizontal bBichinhoH = new BichinhoVaiVemHorizontal("Fruit_1.png");
+        Fruta bBichinhoH = new Fruta("Fruit_1.png");
         bBichinhoH.setPosicao(3, 3);
         this.addPersonagem(bBichinhoH);
 
-        BichinhoVaiVemHorizontal bBichinhoH2 = new BichinhoVaiVemHorizontal("Fruit_1.png");
+        Fruta bBichinhoH2 = new Fruta("Fruit_1.png");
         bBichinhoH2.setPosicao(6, 6);
         this.addPersonagem(bBichinhoH2);
-
-        Caveira bV = new Caveira("Villan_1.png");
-        bV.setPosicao(9, 1);
-        this.addPersonagem(bV);
     }
 
     public int getCameraLinha() {
@@ -93,6 +86,12 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     public void paint(Graphics gOld) {
+        if (getBufferStrategy() == null) {
+            // Create it if it doesn't exist yet
+            this.createBufferStrategy(2);
+            return;
+        }
+        
         Graphics g = this.getBufferStrategy().getDrawGraphics();
         /*Criamos um contexto gráfico*/
         g2 = g.create(getInsets().left, getInsets().top, getWidth() - getInsets().right, getHeight() - getInsets().top);
@@ -121,6 +120,11 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             this.cj.desenhaTudo(faseAtual);
             this.cj.processaTudo(faseAtual);
         }
+        
+        // Draw the success notification on top of everything
+        if (SuccessoNotification.getInstance().isVisible()) {
+            SuccessoNotification.getInstance().render(g2, getWidth() - getInsets().right, getHeight() - getInsets().top);
+        }
 
         g.dispose();
         g2.dispose();
@@ -140,6 +144,8 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     public void go() {
         TimerTask task = new TimerTask() {
             public void run() {
+                // Update the notification
+                SuccessoNotification.getInstance().update();
                 repaint();
             }
         };
@@ -158,12 +164,14 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             hero.moveLeft();
         } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             hero.moveRight();
+        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+            // Test the success notification with S key
+            SuccessoNotification.getInstance().showSuccessMessage("SUCESSO!!");
         }
+        
         this.atualizaCamera();
         this.setTitle("-> Cell: " + (hero.getPosicao().getColuna()) + ", "
                 + (hero.getPosicao().getLinha()));
-
-        //repaint(); /*invoca o paint imediatamente, sem aguardar o refresh*/
     }
 
     public void mousePressed(MouseEvent e) {

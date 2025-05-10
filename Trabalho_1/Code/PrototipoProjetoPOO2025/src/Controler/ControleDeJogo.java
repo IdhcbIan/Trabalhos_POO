@@ -1,7 +1,8 @@
 package Controler;
 
-import Modelo.Personagem;
+import Modelo.Fruta;
 import Modelo.Hero;
+import Modelo.Personagem;
 import auxiliar.Posicao;
 import java.util.ArrayList;
 
@@ -12,14 +13,37 @@ public class ControleDeJogo {
         }
     }
     public void processaTudo(ArrayList<Personagem> umaFase){
-        Hero hero = (Hero)umaFase.get(0);
-        Personagem pIesimoPersonagem;
-        for(int i = 1; i < umaFase.size(); i++){
-            pIesimoPersonagem = umaFase.get(i);
-            if(hero.getPosicao().igual(pIesimoPersonagem.getPosicao()))
-                if(pIesimoPersonagem.isbTransponivel())
-                    /*TO-DO: verificar se o personagem eh mortal antes de retirar*/                    
-                    umaFase.remove(pIesimoPersonagem);
+        Hero hero = null;
+        
+        // Find the hero
+        for (int i = 0; i < umaFase.size(); i++) {
+            Personagem p = umaFase.get(i);
+            if (p instanceof Hero) {
+                hero = (Hero) p;
+                break;
+            }
+        }
+        
+        if (hero != null) {
+            // Process collisions
+            for (int i = 0; i < umaFase.size(); i++) {
+                Personagem p = umaFase.get(i);
+                if (p instanceof Fruta) {
+                    // Check if hero is at the same position as the fruit
+                    if (hero.getPosicao().igual(p.getPosicao())) {
+                        Fruta fruta = (Fruta) p;
+                        fruta.coletar();
+                        umaFase.remove(p);
+                        i--; // Adjust index after removal
+                    }
+                }
+                else if (p != hero && hero.getPosicao().igual(p.getPosicao())) {
+                    if (p.isbTransponivel()) {
+                        umaFase.remove(p);
+                        i--; // Adjust index after removal
+                    }
+                }
+            }
         }
     }
     
