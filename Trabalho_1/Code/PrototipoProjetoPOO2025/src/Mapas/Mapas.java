@@ -65,14 +65,25 @@ public class Mapas implements Serializable {
         for (int i = 1; i < 39; i++) {
             addIcePosition(i, 14);
         }
-        
-        // Add some internal ice barriers
-        addIcePosition(5, 5);
-        addIcePosition(5, 6);
-        addIcePosition(5, 7);
-        addIcePosition(9, 8);
-        addIcePosition(9, 9);
-        addIcePosition(9, 10);
+
+
+        // Labirinth
+        for (int i = 1; i < 9; i++) {
+            addIcePosition(6, i);
+        }
+        for (int i = 10; i < 14; i++) {
+            addIcePosition(6, i);
+        }
+
+        for (int i = 1; i < 12; i++) {
+            addIcePosition(8, i);
+        }
+        for (int i = 13; i < 14; i++) {
+            addIcePosition(8, i);
+        }
+
+
+
     }
     
     private void initializeLevel2Map() {
@@ -121,38 +132,17 @@ public class Mapas implements Serializable {
         setHeroStartPosition(1, 1);
     }
     
-    /**
-     * Adds an ice barrier position to the map
-     * @param linha Row position
-     * @param coluna Column position
-     */
     public void addIcePosition(int linha, int coluna) {
         icePositions.add(new Posicao(linha, coluna));
     }
     
-    /**
-     * Adds a villain position to the map
-     * @param linha Row position
-     * @param coluna Column position
-     */
     public void addVillainPosition(int linha, int coluna) {
         villainPositions.add(new Posicao(linha, coluna));
     }
     
-    /**
-     * Adds a fruit position to the map
-     * @param linha Row position
-     * @param coluna Column position
-     */
     public void addFruitPosition(int linha, int coluna) {
         fruitPositions.add(new Posicao(linha, coluna));
     }
-    
-    /**
-     * Sets the hero's starting position
-     * @param linha Row position
-     * @param coluna Column position
-     */
     public void setHeroStartPosition(int linha, int coluna) {
         this.heroStartPosition = new Posicao(linha, coluna);
     }
@@ -178,20 +168,10 @@ public class Mapas implements Serializable {
         return heroStartPosition;
     }
 
-    /**
-     * Initialize the current level with its elements
-     */
     private void initializeLevel() {
-        // Create hero
         Hero hero = new Hero("Char_1.png");
         
-        // Set hero position based on map - REMOVE THIS LINE
-        // Posicao heroPos = mapa.getHeroStartPosition();
-        // hero.setPosicao(heroPos.getLinha(), heroPos.getColuna());
-
-        // Add ice barriers from map
         addIceBarriers();
 
-        // ... existing code ...
     }
 } 

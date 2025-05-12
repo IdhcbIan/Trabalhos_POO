@@ -86,7 +86,7 @@ public class Fases {
         addFruta(3, 9);
 
         // Add villains - uncomment and modify as needed
-        // addVilao(5, 5, true); // ZigueZague
+        addVilao(7, 1, true); // ZigueZague
         // addVilao(8, 8, false); // Caveira
     }
 
@@ -156,15 +156,9 @@ public class Fases {
      * @param isZigueZague If true, creates ZigueZague, otherwise creates Caveira
      */
     private void addVilao(int linha, int coluna, boolean isZigueZague) {
-        if (isZigueZague) {
-            ZigueZague vilao = new ZigueZague("fire.png");
-            vilao.setPosicao(linha, coluna);
-            this.elementos.add(vilao);
-        } else {
-            Caveira vilao = new Caveira("caveira.png");
-            vilao.setPosicao(linha, coluna);
-            this.elementos.add(vilao);
-        }
+        Villan_1 vilao = new Villan_1("Villan_2.png");
+        vilao.setPosicao(linha, coluna);
+        this.elementos.add(vilao);
     }
 
     /**
