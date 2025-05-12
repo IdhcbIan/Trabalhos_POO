@@ -5,6 +5,7 @@ import Mapas.Fases;
 import Modelo.Hero;
 import Modelo.Personagem;
 import Modelo.SuccessoNotification;
+import Modelo.FracassoNotification;
 import auxiliar.Posicao;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -88,6 +89,26 @@ public class TelaController implements MouseListener, KeyListener {
         this.cameraManager.atualizaCamera(hero);
     }
     
+    // Add this method to check if all fruits are collected
+    public void verificarFimDeFase() {
+        // Check if there are any fruits left in the current phase
+        boolean todasFrutasColetadas = true;
+        
+        for (Personagem p : faseAtual) {
+            // Check if any element is a fruit (you might need to adjust this check based on your class hierarchy)
+            if (p.getClass().getSimpleName().contains("Fruta")) {
+                todasFrutasColetadas = false;
+                break;
+            }
+        }
+        
+        // If all fruits are collected, show success message
+        if (todasFrutasColetadas && !Hero.isGameOver()) {
+            SuccessoNotification.getInstance().showSuccessMessage("SUCESSO!!");
+            System.out.println("All fruits collected! Success!");
+        }
+    }
+    
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_C) {
@@ -95,21 +116,41 @@ public class TelaController implements MouseListener, KeyListener {
         } else if (e.getKeyCode() >= KeyEvent.VK_1 && e.getKeyCode() <= KeyEvent.VK_5) {
             // Load levels 1-5 with number keys
             carregarFase(e.getKeyCode() - KeyEvent.VK_0);
-        } else if (e.getKeyCode() == KeyEvent.VK_R) {
-            // Reload current phase
-            if (fase != null) {
-                carregarFase(fase.getLevel());
+        } else if (e.getKeyCode() == KeyEvent.VK_D) {
+            // Debug key - force game over
+            if (hero != null) {
+                System.out.println("Debug: Forcing game over");
+                hero.morrer();
+                // Force repaint to show notification
+                this.view.repaint();
             }
-        } else if (hero != null) {
-            // Only process movement if hero exists
+        } else if (e.getKeyCode() == KeyEvent.VK_R) {
+            System.out.println("R key pressed, isGameOver=" + Hero.isGameOver());
+            // If game is over or R is pressed, restart the current level
+            if (Hero.isGameOver() || fase != null) {
+                // Reset game over state
+                Hero.resetGameOver();
+                // Hide the game over message
+                FracassoNotification.getInstance().hide();
+                // Reload the current phase
+                if (fase != null) {
+                    carregarFase(fase.getLevel());
+                }
+            }
+        } else if (hero != null && !Hero.isGameOver()) {  // Only process movement if hero exists and game is not over
+            // Process movement keys
             if (e.getKeyCode() == KeyEvent.VK_UP) {
                 hero.moveUp();
+                verificarFimDeFase(); // Check after movement
             } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                 hero.moveDown();
+                verificarFimDeFase(); // Check after movement
             } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                 hero.moveLeft();
+                verificarFimDeFase(); // Check after movement
             } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                 hero.moveRight();
+                verificarFimDeFase(); // Check after movement
             } else if (e.getKeyCode() == KeyEvent.VK_S) {
                 // Test the success notification with S key
                 SuccessoNotification.getInstance().showSuccessMessage("SUCESSO!!");

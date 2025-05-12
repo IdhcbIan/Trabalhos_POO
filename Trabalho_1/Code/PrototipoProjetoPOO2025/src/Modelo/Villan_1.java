@@ -68,18 +68,22 @@ public class Villan_1 extends Personagem implements Serializable {
     }
     
     public void autoDesenho(){
-        if(bRight)
-            this.setPosicao(pPosicao.getLinha(), pPosicao.getColuna()+1);
-        else
-            this.setPosicao(pPosicao.getLinha(), pPosicao.getColuna()-1);           
-
-        super.autoDesenho();
-        
-        steps++;
-        if(steps >= maxSteps) {
-            bRight = !bRight;
-            steps = 0;
+        // Only move if the game is not over
+        if (!Hero.isGameOver()) {
+            if(bRight)
+                this.setPosicao(pPosicao.getLinha(), pPosicao.getColuna()+1);
+            else
+                this.setPosicao(pPosicao.getLinha(), pPosicao.getColuna()-1);           
+            
+            steps++;
+            if(steps >= maxSteps) {
+                bRight = !bRight;
+                steps = 0;
+            }
         }
+        
+        // Always draw the villain, even when game is over
+        super.autoDesenho();
     }
 
     
@@ -96,6 +100,7 @@ public class Villan_1 extends Personagem implements Serializable {
     }
 
     public void matarHero(Hero hero) {
+        System.out.println("Hero killed by villain!"); // Debug message
         hero.morrer();
     }
 }

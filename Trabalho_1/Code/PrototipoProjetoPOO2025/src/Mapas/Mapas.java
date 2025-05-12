@@ -56,37 +56,83 @@ public class Mapas implements Serializable {
         
         // Bottom edge
         for (int i = 0; i < 15; i++) {
-            addIcePosition(39, i);
+            addIcePosition(29, i);
         }
         
         // Left edge
-        for (int i = 1; i < 39; i++) {
+        for (int i = 1; i < 29; i++) {
             addIcePosition(i, 0);
         }
         
         // Right edge
-        for (int i = 1; i < 39; i++) {
+        for (int i = 1; i < 29; i++) {
             addIcePosition(i, 14);
         }
 
 
-        // Labirinth
-        for (int i = 1; i < 9; i++) {
-            addIcePosition(6, i);
+
+
+        // Trap 1 (4)
+        for (int i = 1; i < 8; i++) {
+            addIcePosition(3, i);
         }
         for (int i = 10; i < 14; i++) {
-            addIcePosition(6, i);
+            addIcePosition(3, i);
         }
 
-        for (int i = 1; i < 12; i++) {
-            addIcePosition(8, i);
+        for (int i = 1; i < 11; i++) {
+            addIcePosition(5, i);
         }
         for (int i = 13; i < 14; i++) {
-            addIcePosition(8, i);
+            addIcePosition(5, i);
+        }
+        //-----------------------------
+
+
+        // Trap 2 (11)
+        for (int i = 1; i < 4; i++) {
+            addIcePosition(10, i);
+        }
+        for (int i = 6; i < 14; i++) {
+            addIcePosition(10, i);
         }
 
+        for (int i = 1; i < 7; i++) {
+            addIcePosition(12, i);
+        }
+        for (int i = 9; i < 14; i++) {
+            addIcePosition(12, i);
+        }
 
+        // Trap 3 (18)
+        for (int i = 1; i < 8; i++) {
+            addIcePosition(17, i);
+        }
+        for (int i = 10; i < 14; i++) {
+            addIcePosition(17, i);
+        }
 
+        for (int i = 1; i < 11; i++) {
+            addIcePosition(19, i);
+        }
+        for (int i = 13; i < 14; i++) {
+            addIcePosition(19, i);
+        }
+
+        // Trap 4  (25)
+        for (int i = 1; i < 4; i++) {
+            addIcePosition(24, i);
+        }
+        for (int i = 6; i < 14; i++) {
+            addIcePosition(24, i);
+        }
+
+        for (int i = 1; i < 7; i++) {
+            addIcePosition(26, i);
+        }
+        for (int i = 9; i < 14; i++) {
+            addIcePosition(26, i);
+        }
     }
     
     private void initializeLevel2Map() {

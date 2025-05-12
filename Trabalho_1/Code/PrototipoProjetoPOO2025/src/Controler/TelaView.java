@@ -13,6 +13,7 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import Modelo.Hero;
 
 public class TelaView extends JFrame {
     private TelaController controller;
@@ -103,21 +104,30 @@ public class TelaView extends JFrame {
             }
         }
         
-        // Debug - show camera position
-        System.out.println("Camera: " + cameraManager.getCameraLinha() + "," + cameraManager.getCameraColuna());
-        
         if (controller.getFaseAtual() != null && !controller.getFaseAtual().isEmpty()) {
             controller.getControleDeJogo().desenhaTudo(controller.getFaseAtual());
             controller.getControleDeJogo().processaTudo(controller.getFaseAtual());
         }
         
+        // Check if game is over to ensure notification is visible
+        if (Hero.isGameOver()) {
+            System.out.println("TelaView: Game is over, should show notification");
+        }
+        
         // Draw the success notification on top of everything
         if (SuccessoNotification.getInstance().isVisible()) {
+            System.out.println("TelaView: Rendering success notification");
             SuccessoNotification.getInstance().render(g2, getWidth() - getInsets().right, getHeight() - getInsets().top);
         }
         
         // Draw the failure notification on top of everything
         if (FracassoNotification.getInstance().isVisible()) {
+            System.out.println("TelaView: Rendering failure notification");
+            FracassoNotification.getInstance().render(g2, getWidth() - getInsets().right, getHeight() - getInsets().top);
+        } else if (Hero.isGameOver()) {
+            // If game is over but notification is not visible, force show it
+            System.out.println("TelaView: Game over but notification not visible, forcing it");
+            FracassoNotification.getInstance().showFailureMessage("Game Over!\nPress R to restart");
             FracassoNotification.getInstance().render(g2, getWidth() - getInsets().right, getHeight() - getInsets().top);
         }
 

@@ -81,13 +81,16 @@ public class Fases {
         hero.setPosicao(2, 7);
         
         // Add fruits
-        addFruta(3, 3);
-        addFruta(3, 6);
-        addFruta(3, 9);
+        addFruta(4, 8);
+        addFruta(11, 4);
+        addFruta(18, 8);
+        addFruta(25, 4);
 
         // Add villains - uncomment and modify as needed
-        addVilao(7, 1, true); // ZigueZague
-        // addVilao(8, 8, false); // Caveira
+        addVilao(4, 1, true); 
+        addVilao(11, 1, true); 
+        addVilao(18, 1, true); 
+        addVilao(25, 1, true); 
     }
 
     /**
