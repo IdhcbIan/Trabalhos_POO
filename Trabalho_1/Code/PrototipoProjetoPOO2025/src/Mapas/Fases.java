@@ -95,7 +95,7 @@ public class Fases {
         addFruta(10, 10);
         addFrutaVert(7, 7);
 
-        
+
         // Add villains
         addVilao(4, 4, true);
         addVilao(12, 12, false);
@@ -105,11 +105,19 @@ public class Fases {
      * Configure level 3
      */
     private void configureLevel3() {
-        // Set hero position for level 3
-        hero.setPosicao(1, 1);
+        hero.setPosicao(2, 7);
         
-        // Add fruits and villains for level 3
-        // This is a placeholder - customize as needed
+        // Add fruits
+        addFruta(4, 8);
+        addFruta(11, 4);
+        addFruta(18, 8);
+        addFruta(25, 4);
+
+        // Add villains - uncomment and modify as needed
+        addVilao2(4, 1, true); 
+        addVilao2(11, 1, true); 
+        addVilao2(18, 1, true); 
+        addVilao2(25, 1, true); 
     }
 
     /**
@@ -167,6 +175,11 @@ public class Fases {
         }
     }
 
+    private void addVilao2(int linha, int coluna, boolean isZigueZague) {
+        Villan_2 vilao = new Villan_2("Villan_1.png");
+        vilao.setPosicao(linha, coluna);
+        this.elementos.add(vilao);
+    }
 
     /**
      * Helper method to add a fire block to the phase
