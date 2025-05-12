@@ -3,6 +3,7 @@ package Controler;
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
 import Modelo.SuccessoNotification;
+import Modelo.FracassoNotification;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -60,8 +61,9 @@ public class TelaView extends JFrame {
     public void go() {
         TimerTask task = new TimerTask() {
             public void run() {
-                // Update the notification
+                // Update the notifications
                 SuccessoNotification.getInstance().update();
+                FracassoNotification.getInstance().update();
                 repaint();
             }
         };
@@ -112,6 +114,11 @@ public class TelaView extends JFrame {
         // Draw the success notification on top of everything
         if (SuccessoNotification.getInstance().isVisible()) {
             SuccessoNotification.getInstance().render(g2, getWidth() - getInsets().right, getHeight() - getInsets().top);
+        }
+        
+        // Draw the failure notification on top of everything
+        if (FracassoNotification.getInstance().isVisible()) {
+            FracassoNotification.getInstance().render(g2, getWidth() - getInsets().right, getHeight() - getInsets().top);
         }
 
         g.dispose();
