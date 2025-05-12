@@ -3,17 +3,17 @@ package Auxiliar;
 import java.awt.Graphics;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
-import Controler.Tela;
+import Controler.TelaView;
 
 public class Desenho implements Serializable {
 
-    static Tela jCenario;
+    static TelaView jCenario;
 
-    public static void setCenario(Tela umJCenario) {
+    public static void setCenario(TelaView umJCenario) {
         jCenario = umJCenario;
     }
 
-    public static Tela acessoATelaDoJogo() {
+    public static TelaView acessoATelaDoJogo() {
         return jCenario;
     }
 

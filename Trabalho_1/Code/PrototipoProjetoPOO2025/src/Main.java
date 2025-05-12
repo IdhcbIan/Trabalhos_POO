@@ -1,15 +1,33 @@
-import Controler.Tela;
+import Controler.TelaView;
+import Controler.TelaController;
+import Controler.CameraManager;
 
 public class Main {
 
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Tela tTela = new Tela();
-                tTela.setVisible(true);
-                tTela.go();
+                // Create the view
+                TelaView view = new TelaView();
+                
+                // Create the controller and camera manager
+                TelaController controller = new TelaController();
+                CameraManager cameraManager = new CameraManager();
+                
+                // Set up the connections between components
+                controller.setView(view);
+                controller.setCameraManager(cameraManager);
+                
+                view.setController(controller);
+                view.setCameraManager(cameraManager);
+                
+                // Load the first phase
+                controller.carregarFase(1);
+                
+                // Start the game loop
+                view.setVisible(true);
+                view.go();
             }
         });
     }
 }
-
