@@ -13,6 +13,7 @@ public class Fases {
     private int level;
     private ArrayList<Personagem> elementos;
     private Hero hero;
+    private Mapas mapa;
 
     /**
      * Constructor for a single phase
@@ -21,6 +22,7 @@ public class Fases {
     public Fases(int level) {
         this.level = level;
         this.elementos = new ArrayList<>();
+        this.mapa = new Mapas(level);
         initializeLevel();
     }
 
@@ -30,6 +32,9 @@ public class Fases {
     private void initializeLevel() {
         // Create hero
         hero = new Hero("Char_1.png");
+        
+        // Add ice barriers from map
+        addIceBarriers();
 
         // Configure level based on level number
         switch(level) {
@@ -55,14 +60,26 @@ public class Fases {
         // Add hero to elements list (must be added after level configuration to ensure it's on top)
         this.elementos.add(hero);
     }
+    
+    /**
+     * Add ice barriers based on map configuration
+     */
+    private void addIceBarriers() {
+        ArrayList<Posicao> icePositions = mapa.getIcePositions();
+        for (Posicao pos : icePositions) {
+            Ice ice = new Ice("Ice.png");
+            ice.setPosicao(pos.getLinha(), pos.getColuna());
+            this.elementos.add(ice);
+        }
+    }
 
     /**
      * Configure level 1
      */
     private void configureLevel1() {
-        // Set hero position
-        hero.setPosicao(0, 7);
-
+        // Set hero position for level 1
+        hero.setPosicao(2, 7);
+        
         // Add fruits
         addFruta(3, 3);
         addFruta(3, 6);
@@ -77,9 +94,9 @@ public class Fases {
      * Configure level 2
      */
     private void configureLevel2() {
-        // Set hero position
+        // Set hero position for level 2
         hero.setPosicao(1, 1);
-
+        
         // Add fruits
         addFruta(5, 5);
         addFruta(7, 7);
@@ -94,9 +111,9 @@ public class Fases {
      * Configure level 3
      */
     private void configureLevel3() {
-        // Set hero position
+        // Set hero position for level 3
         hero.setPosicao(1, 1);
-
+        
         // Add fruits and villains for level 3
         // This is a placeholder - customize as needed
     }
@@ -105,9 +122,9 @@ public class Fases {
      * Configure level 4
      */
     private void configureLevel4() {
-        // Set hero position
+        // Set hero position for level 4
         hero.setPosicao(1, 1);
-
+        
         // Add fruits and villains for level 4
         // This is a placeholder - customize as needed
     }
@@ -116,9 +133,9 @@ public class Fases {
      * Configure level 5
      */
     private void configureLevel5() {
-        // Set hero position
+        // Set hero position for level 5
         hero.setPosicao(1, 1);
-
+        
         // Add fruits and villains for level 5
         // This is a placeholder - customize as needed
     }
@@ -172,5 +189,13 @@ public class Fases {
      */
     public int getLevel() {
         return level;
+    }
+    
+    /**
+     * Gets the map for this phase
+     * @return The map object for this phase
+     */
+    public Mapas getMapa() {
+        return mapa;
     }
 }
