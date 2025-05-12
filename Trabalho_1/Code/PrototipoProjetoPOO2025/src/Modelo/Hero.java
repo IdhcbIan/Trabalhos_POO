@@ -65,4 +65,8 @@ public class Hero extends Personagem implements Serializable{
         return false;
     }    
     
+    public void morrer() {
+        // Display the failure message
+        FracassoNotification.getInstance().showFailureMessage("Game Over!");
+    }
 }

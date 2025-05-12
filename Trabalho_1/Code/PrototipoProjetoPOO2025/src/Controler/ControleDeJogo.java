@@ -3,6 +3,7 @@ package Controler;
 import Modelo.Fruta;
 import Modelo.Hero;
 import Modelo.Personagem;
+import Modelo.Villan_1;
 import auxiliar.Posicao;
 import java.util.ArrayList;
 
@@ -35,6 +36,13 @@ public class ControleDeJogo {
                         fruta.coletar();
                         umaFase.remove(p);
                         i--; // Adjust index after removal
+                    }
+                }
+                // Check for collisions with villains
+                else if (p instanceof Villan_1) {
+                    if (hero.getPosicao().igual(p.getPosicao())) {
+                        Villan_1 villan = (Villan_1) p;
+                        villan.matarHero(hero);
                     }
                 }
                 else if (p != hero && hero.getPosicao().igual(p.getPosicao())) {

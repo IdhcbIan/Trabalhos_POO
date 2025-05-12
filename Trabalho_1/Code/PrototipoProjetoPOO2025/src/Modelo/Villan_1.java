@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
+import Modelo.FracassoNotification;
 
 public class Villan_1 extends Personagem implements Serializable {
     private boolean bRight;
@@ -92,5 +93,9 @@ public class Villan_1 extends Personagem implements Serializable {
     public static void resetContadores() {
         totalVillans = 0;
         villansColetadas = 0;
+    }
+
+    public void matarHero(Hero hero) {
+        hero.morrer();
     }
 }
