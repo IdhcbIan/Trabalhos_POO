@@ -52,13 +52,17 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         this.addPersonagem(hero);
         this.atualizaCamera();
 
-        Fruta bBichinhoH = new Fruta("Fruit_1.png");
-        bBichinhoH.setPosicao(3, 3);
-        this.addPersonagem(bBichinhoH);
+        Fruta F1 = new Fruta("Fruit_1.png");
+        F1.setPosicao(3, 3);
+        this.addPersonagem(F1);
 
-        Fruta bBichinhoH2 = new Fruta("Fruit_1.png");
-        bBichinhoH2.setPosicao(6, 6);
-        this.addPersonagem(bBichinhoH2);
+        Fruta F2 = new Fruta("Fruit_1.png");
+        F2.setPosicao(3, 6);
+        this.addPersonagem(F2);
+        
+        Fruta F3 = new Fruta("Fruit_1.png");
+        F3.setPosicao(3, 9);
+        this.addPersonagem(F3);
     }
 
     public int getCameraLinha() {
