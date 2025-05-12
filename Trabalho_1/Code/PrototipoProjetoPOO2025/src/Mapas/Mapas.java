@@ -4,10 +4,6 @@ import auxiliar.Posicao;
 import java.util.ArrayList;
 import java.io.Serializable;
 
-/**
- * Mapa class represents the definition of a game map including
- * ice barriers, villain positions, and fruits.
- */
 public class Mapas implements Serializable {
     private int level;
     private ArrayList<Posicao> icePositions;
@@ -26,9 +22,6 @@ public class Mapas implements Serializable {
         initializeMap();
     }
     
-    /**
-     * Initialize map layout for the current level
-     */
     private void initializeMap() {
         switch(level) {
             case 1:
@@ -47,20 +40,13 @@ public class Mapas implements Serializable {
                 initializeLevel5Map();
                 break;
             default:
-                initializeLevel1Map(); // Default to level 1
+                initializeLevel1Map(); 
         }
     }
     
-    /**
-     * Initialize map layout for level 1
-     */
     private void initializeLevel1Map() {
-        // Set hero start position
 
-
-        // Add ice barriers (example layout)
-        // Create a border around the edges of the map
-        // Top edge
+        // Top Edge
         for (int i = 0; i < 15; i++) {
             addIcePosition(0, i);
         }
@@ -89,15 +75,8 @@ public class Mapas implements Serializable {
         addIcePosition(9, 10);
     }
     
-    /**
-     * Initialize map layout for level 2
-     */
     private void initializeLevel2Map() {
-        // Set hero start position
-        setHeroStartPosition(1, 1);
         
-        // Add ice barriers (example layout)
-        // Create a border around the edges of the map
         // Top edge
         for (int i = 0; i < 15; i++) {
             addIcePosition(0, i);
@@ -127,25 +106,16 @@ public class Mapas implements Serializable {
         }
     }
     
-    /**
-     * Initialize map layout for level 3
-     */
     private void initializeLevel3Map() {
         // Placeholder for level 3 map configuration
         setHeroStartPosition(1, 1);
     }
     
-    /**
-     * Initialize map layout for level 4
-     */
     private void initializeLevel4Map() {
         // Placeholder for level 4 map configuration
         setHeroStartPosition(1, 1);
     }
     
-    /**
-     * Initialize map layout for level 5
-     */
     private void initializeLevel5Map() {
         // Placeholder for level 5 map configuration
         setHeroStartPosition(1, 1);
