@@ -2,6 +2,9 @@ package Mapas;
 
 import auxiliar.Posicao;
 import java.util.ArrayList;
+
+import Modelo.Hero;
+
 import java.io.Serializable;
 
 public class Mapas implements Serializable {
@@ -81,29 +84,60 @@ public class Mapas implements Serializable {
         for (int i = 0; i < 15; i++) {
             addIcePosition(0, i);
         }
-        
+
         // Bottom edge
         for (int i = 0; i < 15; i++) {
             addIcePosition(14, i);
         }
-        
+
         // Left edge
         for (int i = 1; i < 14; i++) {
             addIcePosition(i, 0);
         }
-        
+
         // Right edge
         for (int i = 1; i < 14; i++) {
             addIcePosition(i, 14);
         }
-        
-        // Add some internal ice barriers in a maze-like pattern
-        for (int i = 3; i < 12; i += 2) {
-            for (int j = 3; j < 12; j += 4) {
-                addIcePosition(i, j);
-                addIcePosition(i, j+1);
-            }
+
+        // Create a spiral pattern of ice blocks
+        // Outer layer of spiral (clockwise from top-left)
+        for (int i = 2; i <= 12; i++) {
+            addIcePosition(2, i); // Top horizontal line
         }
+        for (int i = 3; i <= 12; i++) {
+            addIcePosition(i, 12); // Right vertical line
+        }
+        for (int i = 11; i >= 2; i--) {
+            addIcePosition(12, i); // Bottom horizontal line
+        }
+        for (int i = 11; i >= 4; i--) {
+            addIcePosition(i, 2); // Left vertical line (leaving an entrance)
+        }
+
+        // Second layer of spiral (clockwise from top-left)
+        for (int i = 4; i <= 10; i++) {
+            addIcePosition(4, i); // Top horizontal line
+        }
+        for (int i = 5; i <= 10; i++) {
+            addIcePosition(i, 10); // Right vertical line
+        }
+        for (int i = 9; i >= 4; i--) {
+            addIcePosition(10, i); // Bottom horizontal line
+        }
+        for (int i = 9; i >= 6; i--) {
+            addIcePosition(i, 4); // Left vertical line (leaving an entrance)
+        }
+
+        // Inner layer of spiral (clockwise from top-left)
+        for (int i = 6; i <= 8; i++) {
+            addIcePosition(6, i); // Top horizontal line
+        }
+        for (int i = 7; i <= 8; i++) {
+            addIcePosition(i, 8); // Right vertical line
+        }
+        addIcePosition(8, 7); // Bottom horizontal line (partial)
+        addIcePosition(8, 6); // Bottom horizontal line (partial)
     }
     
     private void initializeLevel3Map() {
