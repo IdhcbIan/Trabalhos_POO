@@ -36,8 +36,6 @@ public class Fases {
         // Add ice barriers from map
         addIceBarriers();
 
-        // Add fire blocks
-        addFogoBlocks();
 
         // Configure level based on level number
         switch(level) {
@@ -64,38 +62,6 @@ public class Fases {
         this.elementos.add(hero);
     }
     
-    /**
-     * Add ice barriers based on map configuration
-     */
-    private void addIceBarriers() {
-        ArrayList<Posicao> icePositions = mapa.getIcePositions();
-        for (Posicao pos : icePositions) {
-            Ice ice = new Ice("Ice.png");
-            ice.setPosicao(pos.getLinha(), pos.getColuna());
-            this.elementos.add(ice);
-        }
-    }
-
-    /**
-     * Add fire blocks to the game
-     */
-    private void addFogoBlocks() {
-        // Add fire blocks at specific positions
-        // Example: Add fire blocks at specific locations
-        addFogo(6, 8);
-        addFogo(13, 5);
-        addFogo(20, 10);
-    }
-
-    /**
-     * Helper method to add a fire block to the phase
-     */
-    private void addFogo(int linha, int coluna) {
-        Fogo fogo = new Fogo("Fire.png"); // Make sure you have a fire image in your resources
-        fogo.setPosicao(linha, coluna);
-        this.elementos.add(fogo);
-    }
-
     /**
      * Configure level 1
      */
@@ -127,7 +93,9 @@ public class Fases {
         addFruta(5, 5);
         addFruta(7, 7);
         addFruta(10, 10);
+        addFrutaVert(7, 7);
 
+        
         // Add villains
         addVilao(4, 4, true);
         addVilao(12, 12, false);
@@ -185,6 +153,37 @@ public class Fases {
         Villan_1 vilao = new Villan_1("Villan_2.png");
         vilao.setPosicao(linha, coluna);
         this.elementos.add(vilao);
+    }
+
+    /**
+     * Add ice barriers based on map configuration
+     */
+    private void addIceBarriers() {
+        ArrayList<Posicao> icePositions = mapa.getIcePositions();
+        for (Posicao pos : icePositions) {
+            Ice ice = new Ice("Ice.png");
+            ice.setPosicao(pos.getLinha(), pos.getColuna());
+            this.elementos.add(ice);
+        }
+    }
+
+
+    /**
+     * Helper method to add a fire block to the phase
+     */
+    private void addFogo(int linha, int coluna) {
+        Fogo fogo = new Fogo("Fire.png"); // Make sure you have a fire image in your resources
+        fogo.setPosicao(linha, coluna);
+        this.elementos.add(fogo);
+    }
+
+    /**
+     * Helper method to add a vertical fruit to the phase
+     */
+    private void addFrutaVert(int linha, int coluna) {
+        FrutaVert frutaVert = new FrutaVert("Fruit_2.png");
+        frutaVert.setPosicao(linha, coluna);
+        this.elementos.add(frutaVert);
     }
 
     /**

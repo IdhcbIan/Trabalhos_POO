@@ -48,7 +48,10 @@ public class Mapas implements Serializable {
                 initializeLevel1Map(); 
         }
     }
-    
+
+
+
+    //------------ Level 1 --------------------------------------
     private void initializeLevel1Map() {
 
         // Top Edge
@@ -136,7 +139,11 @@ public class Mapas implements Serializable {
             addIcePosition(26, i);
         }
     }
-    
+
+
+
+
+    //------------ Level 2 --------------------------------------
     private void initializeLevel2Map() {
         
         // Top edge
@@ -198,7 +205,11 @@ public class Mapas implements Serializable {
         addIcePosition(8, 7); // Bottom horizontal line (partial)
         addIcePosition(8, 6); // Bottom horizontal line (partial)
     }
-    
+
+
+
+
+    //------------ Level 3 --------------------------------------
     private void initializeLevel3Map() {
         // Placeholder for level 3 map configuration
         setHeroStartPosition(1, 1);
