@@ -36,6 +36,9 @@ public class Fases {
         // Add ice barriers from map
         addIceBarriers();
 
+        // Add fire blocks
+        addFogoBlocks();
+
         // Configure level based on level number
         switch(level) {
             case 1:
@@ -71,6 +74,26 @@ public class Fases {
             ice.setPosicao(pos.getLinha(), pos.getColuna());
             this.elementos.add(ice);
         }
+    }
+
+    /**
+     * Add fire blocks to the game
+     */
+    private void addFogoBlocks() {
+        // Add fire blocks at specific positions
+        // Example: Add fire blocks at specific locations
+        addFogo(6, 8);
+        addFogo(13, 5);
+        addFogo(20, 10);
+    }
+
+    /**
+     * Helper method to add a fire block to the phase
+     */
+    private void addFogo(int linha, int coluna) {
+        Fogo fogo = new Fogo("Fire.png"); // Make sure you have a fire image in your resources
+        fogo.setPosicao(linha, coluna);
+        this.elementos.add(fogo);
     }
 
     /**

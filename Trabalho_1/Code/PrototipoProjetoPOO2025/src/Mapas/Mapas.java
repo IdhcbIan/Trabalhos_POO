@@ -12,6 +12,7 @@ public class Mapas implements Serializable {
     private ArrayList<Posicao> icePositions;
     private ArrayList<Posicao> villainPositions;
     private ArrayList<Posicao> fruitPositions;
+    private ArrayList<Posicao> fogoPositions;
     private Posicao heroStartPosition;
     
     public Mapas(int level) {
@@ -19,6 +20,7 @@ public class Mapas implements Serializable {
         this.icePositions = new ArrayList<>();
         this.villainPositions = new ArrayList<>();
         this.fruitPositions = new ArrayList<>();
+        this.fogoPositions = new ArrayList<>();
         this.heroStartPosition = new Posicao(1, 1); // Default hero position
         
         // Initialize map layout based on level
@@ -223,6 +225,11 @@ public class Mapas implements Serializable {
     public void addFruitPosition(int linha, int coluna) {
         fruitPositions.add(new Posicao(linha, coluna));
     }
+    
+    public void addFogoPosition(int linha, int coluna) {
+        fogoPositions.add(new Posicao(linha, coluna));
+    }
+    
     public void setHeroStartPosition(int linha, int coluna) {
         this.heroStartPosition = new Posicao(linha, coluna);
     }
@@ -242,6 +249,10 @@ public class Mapas implements Serializable {
     
     public ArrayList<Posicao> getFruitPositions() {
         return fruitPositions;
+    }
+    
+    public ArrayList<Posicao> getFogoPositions() {
+        return fogoPositions;
     }
     
     public Posicao getHeroStartPosition() {

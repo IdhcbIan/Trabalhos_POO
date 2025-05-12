@@ -4,6 +4,7 @@ import Modelo.Fruta;
 import Modelo.Hero;
 import Modelo.Personagem;
 import Modelo.Villan_1;
+import Modelo.Fogo;
 import auxiliar.Posicao;
 import java.util.ArrayList;
 
@@ -43,6 +44,13 @@ public class ControleDeJogo {
                     if (hero.getPosicao().igual(p.getPosicao())) {
                         Villan_1 villan = (Villan_1) p;
                         villan.matarHero(hero);
+                    }
+                }
+                // Check for hero standing on fire
+                else if (p instanceof Fogo) {
+                    Fogo fogo = (Fogo) p;
+                    if (fogo.checkHeroOnFire(hero)) {
+                        hero.morrer(); // Kill the hero if standing on fire
                     }
                 }
                 else if (p != hero && hero.getPosicao().igual(p.getPosicao())) {
