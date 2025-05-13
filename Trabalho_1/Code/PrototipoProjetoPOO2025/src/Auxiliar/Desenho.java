@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
 import Controler.TelaView;
+import Modelo.Hero;
+import Modelo.Personagem;
 
 public class Desenho implements Serializable {
 
@@ -31,4 +33,22 @@ public class Desenho implements Serializable {
         }
     }
 
+    public static Hero acessoAoHeroi() {
+        if (jCenario != null) {
+            return jCenario.getController().getHero();
+        }
+        return null;
+    }
+
+    public static void removerPersonagem(Personagem p) {
+        if (jCenario != null) {
+            jCenario.getController().removePersonagem(p);
+        }
+    }
+
+    public static void desenhar(Personagem p) {
+        if (jCenario != null) {
+            jCenario.getController().addPersonagem(p);
+        }
+    }
 }

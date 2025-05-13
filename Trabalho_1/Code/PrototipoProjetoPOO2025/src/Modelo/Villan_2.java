@@ -5,8 +5,9 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
-import Modelo.FracassoNotification;
 import java.util.Random;
+import Auxiliar.Consts;
+import java.util.ArrayList;
 
 public class Villan_2 extends Personagem implements Serializable {
     private boolean bRight;
@@ -17,6 +18,9 @@ public class Villan_2 extends Personagem implements Serializable {
     private static int villansColetadas = 0;
     private Random random = new Random();
     private Hero targetHero; // Reference to the hero for targeting
+    
+    // Static variable to hold the fireballs
+    private static ArrayList<Fireball> pendingFireballs = new ArrayList<>();
 
     public Villan_2(String sNomeImagePNG) {
         super(sNomeImagePNG);
@@ -111,12 +115,25 @@ public class Villan_2 extends Personagem implements Serializable {
             colDirection = heroCol > villainCol ? 1 : -1;
         }
         
-        // Create and add the fireball to the game
-        Fireball fireball = new Fireball("fireball.png", rowDirection, colDirection);
-        fireball.setPosicao(villainRow, villainCol);
-        Desenho.desenhar(fireball);
+        try {
+            // Create the fireball
+            Fireball fireball = new Fireball("Fireball.png", rowDirection, colDirection);
+            fireball.setPosicao(villainRow, villainCol);
+            
+            // Add to the pending fireballs list
+            pendingFireballs.add(fireball);
+        } catch (Exception e) {
+            System.out.println("Error creating fireball: " + e.getMessage());
+        }
     }
-
+    
+    // Static method to get and clear the pending fireballs
+    public static ArrayList<Fireball> getPendingFireballs() {
+        ArrayList<Fireball> fireballs = new ArrayList<>(pendingFireballs);
+        pendingFireballs.clear();
+        return fireballs;
+    }
+    
     // Modified method to show success message in the middle of the screen
     public static void mostrarSucesso() {
         // Create a reference to the notification system

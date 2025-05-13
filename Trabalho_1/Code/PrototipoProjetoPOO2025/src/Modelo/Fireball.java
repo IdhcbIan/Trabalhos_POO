@@ -5,17 +5,20 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
+import Auxiliar.Consts;
 
 public class Fireball extends Personagem implements Serializable {
     private int rowDirection;
     private int colDirection;
     private static final double SCALE_FACTOR = 15;  // Smaller than villain
     private int lifespan = 100;  // Number of frames the fireball exists
+    private boolean shouldBeRemoved = false;
     
     public Fireball(String sNomeImagePNG, int rowDirection, int colDirection) {
         super(sNomeImagePNG);
         this.rowDirection = rowDirection;
         this.colDirection = colDirection;
+        this.bMortal = true;  // Fireballs are deadly
         resizeImage();
     }
     
@@ -65,29 +68,27 @@ public class Fireball extends Personagem implements Serializable {
     
     public void autoDesenho(){
         // Move in the set direction
-        this.setPosicao(pPosicao.getLinha() + rowDirection, pPosicao.getColuna() + colDirection);
+        boolean moved = this.setPosicao(pPosicao.getLinha() + rowDirection, pPosicao.getColuna() + colDirection);
         
         // Decrease lifespan
         lifespan--;
         
-        // Remove if lifespan is over or if the fireball is out of bounds
-        if (lifespan <= 0 || 
+        // If couldn't move or lifespan is over, mark for removal
+        if (!moved || lifespan <= 0 || 
             pPosicao.getLinha() < 0 || 
-            pPosicao.getLinha() >= Auxiliar.Consts.RES ||
+            pPosicao.getLinha() >= Consts.RES ||
             pPosicao.getColuna() < 0 || 
-            pPosicao.getColuna() >= Auxiliar.Consts.RES) {
-            Desenho.removerPersonagem(this);
-            return;
+            pPosicao.getColuna() >= Consts.RES) {
+            // Mark for removal
+            shouldBeRemoved = true;
         }
         
-        // Check for collision with hero
-        Hero hero = (Hero)Desenho.acessoAoHeroi();
-        if (hero != null && hero.getPosicao().igual(pPosicao)) {
-            hero.morrer();
-            Desenho.removerPersonagem(this);
-            return;
-        }
-        
+        // Always draw the fireball
         super.autoDesenho();
+    }
+    
+    // Helper method to check if this fireball should be removed
+    public boolean shouldRemove() {
+        return shouldBeRemoved;
     }
 }

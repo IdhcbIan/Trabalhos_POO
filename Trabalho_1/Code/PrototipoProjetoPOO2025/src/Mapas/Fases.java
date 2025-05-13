@@ -178,6 +178,7 @@ public class Fases {
     private void addVilao2(int linha, int coluna, boolean isZigueZague) {
         Villan_2 vilao = new Villan_2("Villan_1.png");
         vilao.setPosicao(linha, coluna);
+        vilao.setTarget(hero);
         this.elementos.add(vilao);
     }
 

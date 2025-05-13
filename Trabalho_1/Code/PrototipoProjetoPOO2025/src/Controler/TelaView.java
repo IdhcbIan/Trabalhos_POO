@@ -138,6 +138,10 @@ public class TelaView extends JFrame {
         }
     }
     
+    public TelaController getController() {
+        return controller;
+    }
+    
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 

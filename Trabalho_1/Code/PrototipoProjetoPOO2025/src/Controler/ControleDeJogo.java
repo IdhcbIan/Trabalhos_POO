@@ -4,7 +4,9 @@ import Modelo.Fruta;
 import Modelo.Hero;
 import Modelo.Personagem;
 import Modelo.Villan_1;
+import Modelo.Villan_2;
 import Modelo.Fogo;
+import Modelo.Fireball;
 import auxiliar.Posicao;
 import java.util.ArrayList;
 
@@ -27,9 +29,35 @@ public class ControleDeJogo {
         }
         
         if (hero != null) {
-            // Process collisions
+            // Add any pending fireballs
+            ArrayList<Fireball> fireballs = Villan_2.getPendingFireballs();
+            for (Fireball fireball : fireballs) {
+                umaFase.add(fireball);
+            }
+            
+            // Process collisions and remove expired fireballs
             for (int i = 0; i < umaFase.size(); i++) {
                 Personagem p = umaFase.get(i);
+                
+                // Check for fireballs that need to be removed
+                if (p instanceof Fireball) {
+                    Fireball fireball = (Fireball) p;
+                    if (fireball.shouldRemove()) {
+                        umaFase.remove(i);
+                        i--; // Adjust index after removal
+                        continue;
+                    }
+                }
+                
+                // Check for hero collision with fireball
+                if (p instanceof Fireball && hero.getPosicao().igual(p.getPosicao())) {
+                    hero.morrer();
+                    umaFase.remove(p);
+                    i--;
+                    continue;
+                }
+                
+                // Check for collisions with fruits
                 if (p instanceof Fruta) {
                     // Check if hero is at the same position as the fruit
                     if (hero.getPosicao().igual(p.getPosicao())) {
