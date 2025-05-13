@@ -44,16 +44,14 @@ Fase 1(Mapa 3, Vilao 3)
     - Vilao 3
 
 - Fase 1.
-    * Terminado
+    * Terminado!!
 
 - Fase 2
     * Mapa 2
     * Frutas colocar no lugar
 
 - Fase 3
-    * Mapa 1(Pronto)
-    * Vilao 2
-    * Frutas no lugar
+    * Terminado!!
 
 - Fase 4
     * Mapa 2
