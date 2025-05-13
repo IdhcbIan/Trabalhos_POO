@@ -1,6 +1,5 @@
 package Mapas;
 
-import Auxiliar.Consts;
 import Modelo.*;
 import auxiliar.Posicao;
 import java.util.ArrayList;
@@ -90,15 +89,16 @@ public class Fases {
         hero.setPosicao(1, 1);
         
         // Add fruits
-        addFruta(5, 5);
-        addFruta(7, 7);
-        addFruta(10, 10);
-        addFrutaVert(7, 7);
+        addFruta(1, 10);
+        addFruta(3, 8);
+        addFruta(5, 6);
+        addFruta(7, 4);
+    
+        addFrutaVert(6, 9);
 
 
         // Add villains
-        addVilao(4, 4, true);
-        addVilao(12, 12, false);
+        addVilao(3, 1, true);
     }
 
     /**

@@ -1,6 +1,6 @@
-import Controler.TelaView;
-import Controler.TelaController;
 import Controler.CameraManager;
+import Controler.TelaController;
+import Controler.TelaView;
 
 public class Main {
 
@@ -22,7 +22,7 @@ public class Main {
                 view.setCameraManager(cameraManager);
                 
                 // Load the first phase
-                controller.carregarFase(3);
+                controller.carregarFase(2);
                 
                 // Start the game loop
                 view.setVisible(true);
