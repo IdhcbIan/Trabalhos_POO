@@ -236,10 +236,10 @@ public class Mapas implements Serializable {
 
 
         // Trap 1 (4)
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i < 4; i++) {
             addIcePosition(3, i);
         }
-        for (int i = 10; i < 14; i++) {
+        for (int i = 6; i < 14; i++) {
             addIcePosition(3, i);
         }
 
@@ -253,25 +253,25 @@ public class Mapas implements Serializable {
 
 
         // Trap 2 (11)
-        for (int i = 1; i < 4; i++) {
+        for (int i = 1; i < 9; i++) {
             addIcePosition(10, i);
         }
-        for (int i = 6; i < 14; i++) {
+        for (int i = 11; i < 14; i++) {
             addIcePosition(10, i);
         }
 
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i < 2; i++) {
             addIcePosition(12, i);
         }
-        for (int i = 9; i < 14; i++) {
+        for (int i = 4; i < 14; i++) {
             addIcePosition(12, i);
         }
 
         // Trap 3 (18)
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i < 4; i++) {
             addIcePosition(17, i);
         }
-        for (int i = 10; i < 14; i++) {
+        for (int i = 6; i < 14; i++) {
             addIcePosition(17, i);
         }
 
@@ -282,18 +282,19 @@ public class Mapas implements Serializable {
             addIcePosition(19, i);
         }
 
+
         // Trap 4  (25)
         for (int i = 1; i < 4; i++) {
             addIcePosition(24, i);
         }
-        for (int i = 6; i < 14; i++) {
+        for (int i = 11; i < 14; i++) {
             addIcePosition(24, i);
         }
 
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i < 2; i++) {
             addIcePosition(26, i);
         }
-        for (int i = 9; i < 14; i++) {
+        for (int i = 4; i < 14; i++) {
             addIcePosition(26, i);
         }
     }

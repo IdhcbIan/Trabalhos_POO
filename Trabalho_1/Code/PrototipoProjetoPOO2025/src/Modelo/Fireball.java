@@ -1,13 +1,13 @@
 package Modelo;
 
+import Auxiliar.Consts;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
-import Auxiliar.Consts;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 
 public class Fireball extends Personagem implements Serializable {
     private int rowDirection;
@@ -15,6 +15,7 @@ public class Fireball extends Personagem implements Serializable {
     private static final double SCALE_FACTOR = 15;  // Smaller than villain
     private int lifespan = 100;  // Number of frames the fireball exists
     private boolean shouldBeRemoved = false;
+    private boolean firstFrame = true;  // Add this flag
     
     public Fireball(String sNomeImagePNG, int rowDirection, int colDirection) {
         super(sNomeImagePNG);
@@ -89,21 +90,27 @@ public class Fireball extends Personagem implements Serializable {
     }
     
     public void autoDesenho(){
-        // Move in the set direction
-        boolean moved = this.setPosicao(pPosicao.getLinha() + rowDirection, pPosicao.getColuna() + colDirection);
+        // Only move after the first draw
+        if (!firstFrame) {
+            // Move in the set direction
+            boolean moved = this.setPosicao(pPosicao.getLinha() + rowDirection, pPosicao.getColuna() + colDirection);
+            
+            // If couldn't move or lifespan is over, mark for removal
+            if (!moved || lifespan <= 0 || 
+                pPosicao.getLinha() < 0 || 
+                pPosicao.getLinha() >= Consts.MUNDO_ALTURA ||
+                pPosicao.getColuna() < 0 || 
+                pPosicao.getColuna() >= Consts.MUNDO_LARGURA) {
+                // Mark for removal
+                shouldBeRemoved = true;
+            }
+        } else {
+            // First frame - don't move, just draw
+            firstFrame = false;
+        }
         
         // Decrease lifespan
         lifespan--;
-        
-        // If couldn't move or lifespan is over, mark for removal
-        if (!moved || lifespan <= 0 || 
-            pPosicao.getLinha() < 0 || 
-            pPosicao.getLinha() >= Consts.MUNDO_ALTURA ||  // Use world size, not screen size
-            pPosicao.getColuna() < 0 || 
-            pPosicao.getColuna() >= Consts.MUNDO_LARGURA) {  // Use world size, not screen size
-            // Mark for removal
-            shouldBeRemoved = true;
-        }
         
         // Always draw the fireball
         super.autoDesenho();
