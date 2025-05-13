@@ -29,6 +29,17 @@ public class ControleDeJogo {
         }
         
         if (hero != null) {
+            // Process ALL villains to generate fireballs, regardless of visibility
+            for (Personagem p : umaFase) {
+                if (p instanceof Villan_2) {
+                    Villan_2 vilao = (Villan_2) p;
+                    // Manually process the villain's logic to ensure fireballs are created
+                    if (!Hero.isGameOver()) {
+                        vilao.processLogic();
+                    }
+                }
+            }
+        
             // Add any pending fireballs
             ArrayList<Fireball> fireballs = Villan_2.getPendingFireballs();
             for (Fireball fireball : fireballs) {

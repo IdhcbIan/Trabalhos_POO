@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
 import Auxiliar.Consts;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 
 public class Fireball extends Personagem implements Serializable {
     private int rowDirection;
@@ -24,6 +26,7 @@ public class Fireball extends Personagem implements Serializable {
     
     /**
      * Resize the image with scaling, keeping it centered in the block.
+     * Also mirror the image if the fireball is moving left.
      */
     private void resizeImage() {
         if (iImage != null) {
@@ -50,6 +53,21 @@ public class Fireball extends Personagem implements Serializable {
             int finalWidth = (int)(desiredWidth * scaleToFit);
             int finalHeight = (int)(desiredHeight * scaleToFit);
             
+            // Create a temporary BufferedImage to draw the original image
+            BufferedImage originalImg = new BufferedImage(finalWidth, finalHeight, BufferedImage.TYPE_INT_ARGB);
+            Graphics g1 = originalImg.createGraphics();
+            g1.drawImage(img, 0, 0, finalWidth, finalHeight, null);
+            g1.dispose();
+            
+            // If moving left (colDirection is negative), mirror the image horizontally
+            if (colDirection < 0) {
+                // Create mirrored version using AffineTransform
+                AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+                tx.translate(-originalImg.getWidth(null), 0);
+                AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+                originalImg = op.filter(originalImg, null);
+            }
+            
             // Calculate offsets to center the image in the block
             int xOffset = (blockSize - finalWidth) / 2;
             int yOffset = (blockSize - finalHeight) / 2;
@@ -58,8 +76,12 @@ public class Fireball extends Personagem implements Serializable {
             BufferedImage resizedImg = new BufferedImage(blockSize, blockSize, BufferedImage.TYPE_INT_ARGB);
             Graphics g = resizedImg.createGraphics();
             
-            // Draw the image centered in the block
-            g.drawImage(img, xOffset, yOffset, finalWidth, finalHeight, null);
+            // Important: Clear the graphics context with a fully transparent color
+            g.setColor(new java.awt.Color(0, 0, 0, 0));
+            g.fillRect(0, 0, blockSize, blockSize);
+            
+            // Draw the image centered in the block (original or mirrored)
+            g.drawImage(originalImg, xOffset, yOffset, null);
             g.dispose();
             
             iImage = new ImageIcon(resizedImg);
@@ -76,9 +98,9 @@ public class Fireball extends Personagem implements Serializable {
         // If couldn't move or lifespan is over, mark for removal
         if (!moved || lifespan <= 0 || 
             pPosicao.getLinha() < 0 || 
-            pPosicao.getLinha() >= Consts.RES ||
+            pPosicao.getLinha() >= Consts.MUNDO_ALTURA ||  // Use world size, not screen size
             pPosicao.getColuna() < 0 || 
-            pPosicao.getColuna() >= Consts.RES) {
+            pPosicao.getColuna() >= Consts.MUNDO_LARGURA) {  // Use world size, not screen size
             // Mark for removal
             shouldBeRemoved = true;
         }

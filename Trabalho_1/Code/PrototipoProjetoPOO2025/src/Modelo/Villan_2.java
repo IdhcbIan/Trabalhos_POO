@@ -71,6 +71,10 @@ public class Villan_2 extends Personagem implements Serializable {
             BufferedImage resizedImg = new BufferedImage(blockSize, blockSize, BufferedImage.TYPE_INT_ARGB);
             Graphics g = resizedImg.createGraphics();
             
+            // Important: Clear the graphics context with a fully transparent color
+            g.setColor(new java.awt.Color(0, 0, 0, 0));
+            g.fillRect(0, 0, blockSize, blockSize);
+            
             // Draw the image centered in the block
             g.drawImage(img, xOffset, yOffset, finalWidth, finalHeight, null);
             g.dispose();
@@ -80,7 +84,7 @@ public class Villan_2 extends Personagem implements Serializable {
     }
     
     public void autoDesenho(){
-        // Only shoot fireballs if the game is not over
+        // Always process shooting logic, regardless of visibility
         if (!Hero.isGameOver() && targetHero != null) {
             cooldown++;
             if(cooldown >= maxCooldown) {
@@ -89,39 +93,34 @@ public class Villan_2 extends Personagem implements Serializable {
             }
         }
         
-        // Always draw the villain, even when game is over
+        // Draw the villain using parent method
         super.autoDesenho();
     }
     
     private void shootFireball() {
         if (targetHero == null) return;
         
-        // Calculate direction toward hero
+        // Calculate direction toward hero - but only horizontally
         int villainRow = this.getPosicao().getLinha();
         int villainCol = this.getPosicao().getColuna();
-        int heroRow = targetHero.getPosicao().getLinha();
-        int heroCol = targetHero.getPosicao().getColuna();
         
-        // Calculate direction vector
-        int rowDirection = 0;
-        int colDirection = 0;
-        
-        // Determine primary direction (up, down, left, right)
-        if (Math.abs(heroRow - villainRow) > Math.abs(heroCol - villainCol)) {
-            // Vertical movement is primary
-            rowDirection = heroRow > villainRow ? 1 : -1;
-        } else {
-            // Horizontal movement is primary
-            colDirection = heroCol > villainCol ? 1 : -1;
-        }
+        // Set direction vector - only horizontal (no vertical shooting)
+        int rowDirection = 0; // Always 0 for horizontal shooting
+        int colDirection = bRight ? 1 : -1; // 1 for right, -1 for left
         
         try {
             // Create the fireball
             Fireball fireball = new Fireball("Fireball.png", rowDirection, colDirection);
-            fireball.setPosicao(villainRow, villainCol);
+            
+            // Position the fireball one cell away from the villain in the shooting direction
+            fireball.setPosicao(villainRow, villainCol + colDirection);
             
             // Add to the pending fireballs list
             pendingFireballs.add(fireball);
+            
+            // Debug output
+            System.out.println("Fireball created at position: " + villainRow + "," + (villainCol + colDirection) + 
+                               " moving with direction: " + rowDirection + "," + colDirection);
         } catch (Exception e) {
             System.out.println("Error creating fireball: " + e.getMessage());
         }
@@ -149,5 +148,24 @@ public class Villan_2 extends Personagem implements Serializable {
     public void matarHero(Hero hero) {
         System.out.println("Hero killed by villain!"); // Debug message
         hero.morrer();
+    }
+
+    // Add these methods to Villan_2 class
+    public void setShootRate(int rate) {
+        this.maxCooldown = rate;
+    }
+
+    public void setShootDirection(boolean shootRight) {
+        this.bRight = shootRight;
+    }
+
+    public void processLogic() {
+        if (targetHero != null) {
+            cooldown++;
+            if(cooldown >= maxCooldown) {
+                shootFireball();
+                cooldown = 0;
+            }
+        }
     }
 }

@@ -113,11 +113,14 @@ public class Fases {
         addFruta(18, 8);
         addFruta(25, 4);
 
-        // Add villains - uncomment and modify as needed
-        addVilao2(4, 1, true); 
-        addVilao2(11, 1, true); 
-        addVilao2(18, 1, true); 
-        addVilao2(25, 1, true); 
+        // Add villains with rate and direction parameters
+        // Parameters: (row, column, rate, shootRight)
+        addVilao2(4, 1, 20, true);   // Move to column 2 (away from wall) and shoot right
+        addVilao2(11, 13, 20, false);  // Move to column 2 (away from wall) and shoot right
+        
+        // Updated positions for villains 3 and 4
+        addVilao2(18, 1, 20, true);  // Move to column 2 (away from wall) and shoot right
+        addVilao2(25, 13, 20, false);  // Move to column 2 (away from wall) and shoot right
     }
 
     /**
@@ -175,10 +178,19 @@ public class Fases {
         }
     }
 
-    private void addVilao2(int linha, int coluna, boolean isZigueZague) {
+    /**
+     * Helper method to add a villain type 2 with shooting parameters
+     * @param linha Row position
+     * @param coluna Column position
+     * @param rate Shooting rate (higher = slower)
+     * @param shootRight Direction to shoot (true = right, false = left)
+     */
+    private void addVilao2(int linha, int coluna, int rate, boolean shootRight) {
         Villan_2 vilao = new Villan_2("Villan_1.png");
         vilao.setPosicao(linha, coluna);
-        vilao.setTarget(hero);
+        vilao.setTarget(hero);       // Set the hero as the target
+        vilao.setShootRate(rate);    // Set the shooting rate
+        vilao.setShootDirection(shootRight); // Set shooting direction
         this.elementos.add(vilao);
     }
 
