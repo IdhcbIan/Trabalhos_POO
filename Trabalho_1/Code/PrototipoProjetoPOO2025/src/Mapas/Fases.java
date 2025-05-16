@@ -138,11 +138,73 @@ public class Fases {
      * Configure level 5
      */
     private void configureLevel5() {
-        // Set hero position for level 5
-        hero.setPosicao(1, 1);
+        // Set hero position
+        Posicao heroPos = mapa.getHeroStartPosition();
+        hero.setPosicao(heroPos.getLinha(), heroPos.getColuna());
         
-        // Add fruits and villains for level 5
-        // This is a placeholder - customize as needed
+        // Add fruits based on positions defined in the map
+        ArrayList<Posicao> fruitPositions = mapa.getFruitPositions();
+        for (Posicao pos : fruitPositions) {
+            Fruta fruta = new Fruta("Fruit_1.png");
+            fruta.setPosicao(pos.getLinha(), pos.getColuna());
+            this.elementos.add(fruta);
+        }
+        
+        // Add two fire strips across the entire map width (3 rows each)
+        // First strip - upper part of the map (rows 5-7)
+        for (int row = 5; row < 8; row++) {
+            for (int col = 0; col < 14; col++) {
+                addFogo(row, col);
+            }
+        }
+        
+        // Second strip - lower part of the map (rows 20-22)
+        for (int row = 20; row < 23; row++) {
+            for (int col = 0; col < 14; col++) {
+                addFogo(row, col);
+            }
+        }
+        
+        // Add villains based on positions defined in the map
+        ArrayList<Posicao> villainPositions = mapa.getVillainPositions();
+        
+        // CHANGED: Just add a single Villan_3 at the first villain position
+        if (!villainPositions.isEmpty()) {
+            Posicao firstPos = villainPositions.get(0);
+            addVilao3(firstPos.getLinha(), firstPos.getColuna(), 3);
+        }
+        
+        // Then add the Villan_2 instances
+        for (Posicao pos : villainPositions) {
+            // Create a shooting villain that targets the hero
+            Villan_2 vilao = new Villan_2("Villan_1.png");
+            vilao.setPosicao(pos.getLinha(), pos.getColuna());
+            vilao.setTarget(hero);
+            
+            // Determine shooting direction based on position relative to center
+            int maxRow = 29, maxCol = 14;
+            int centerR = maxRow / 2, centerC = maxCol / 2;
+            
+            boolean shootRight = pos.getColuna() < centerC;
+            vilao.setShootRate(20);
+            vilao.setShootDirection(shootRight);
+            
+            this.elementos.add(vilao);
+        }
+    }
+
+    /**
+     * Helper method to add a Villan_3 with specified movement rate
+     * @param linha Row position
+     * @param coluna Column position
+     * @param moveRate Movement rate (lower = faster)
+     */
+    private void addVilao3(int linha, int coluna, int moveRate) {
+        Villan_3 vilao = new Villan_3("Villan_3.png");
+        vilao.setPosicao(linha, coluna);
+        vilao.setTarget(hero);        // Set the hero as the target
+        vilao.setMoveRate(moveRate);  // Set the movement rate (higher = slower)
+        this.elementos.add(vilao);
     }
 
     /**

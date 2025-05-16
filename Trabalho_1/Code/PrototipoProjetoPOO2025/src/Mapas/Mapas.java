@@ -306,8 +306,112 @@ public class Mapas implements Serializable {
     }
     
     private void initializeLevel5Map() {
-        // Placeholder for level 5 map configuration
+        // Hero starts in the northwest corner
         setHeroStartPosition(1, 1);
+
+        // Outer boundary
+        int maxRow = 29, maxCol = 14;
+        for (int c = 0; c <= maxCol; c++) {
+            addIcePosition(0, c);
+            addIcePosition(maxRow, c);
+        }
+        for (int r = 1; r < maxRow; r++) {
+            addIcePosition(r, 0);
+            addIcePosition(r, maxCol);
+        }
+
+        // Create a more interesting maze-like structure with quadrants
+        
+        // Top-left quadrant: Zigzag pattern
+        for (int i = 3; i <= 12; i += 3) {
+            // Horizontal zigzag segments
+            for (int j = 1; j < 6; j++) {
+                addIcePosition(i, j);
+            }
+        }
+        
+        // Top-right quadrant: Spiral-like structure (inspired by level 2)
+        for (int j = 8; j <= 12; j++) {
+            addIcePosition(3, j); // Top horizontal line
+        }
+        for (int i = 4; i <= 9; i++) {
+            addIcePosition(i, 12); // Right vertical line
+        }
+        for (int j = 11; j >= 8; j--) {
+            addIcePosition(9, j); // Bottom horizontal line
+        }
+        for (int i = 8; i >= 5; i--) {
+            addIcePosition(i, 8); // Left vertical line
+        }
+        for (int j = 9; j <= 10; j++) {
+            addIcePosition(5, j); // Inner horizontal line
+        }
+        
+        // Bottom-left quadrant: Room with columns
+        for (int i = 17; i <= 26; i += 3) {
+            for (int j = 2; j <= 5; j += 3) {
+                addIcePosition(i, j);     // Column pattern
+                addIcePosition(i, j + 1); // Make columns thicker
+            }
+        }
+        
+        // Bottom-right quadrant: Maze with dead ends
+        for (int i = 17; i <= 24; i += 7) {
+            for (int j = 8; j <= 12; j++) {
+                addIcePosition(i, j);     // Horizontal barriers
+            }
+        }
+        for (int i = 18; i <= 26; i++) {
+            addIcePosition(i, 10);        // Vertical barrier
+        }
+        // Add some gaps for navigation
+        addIcePosition(20, 10);           // Remove one ice block for path
+        addIcePosition(17, 10);           // Remove one ice block for path
+        
+        // Central chamber with "plus" shape (modified from original)
+        int centerR = maxRow / 2, centerC = maxCol / 2;
+        
+        // Horizontal bar of the plus
+        for (int c = centerC - 4; c <= centerC + 4; c++) {
+            if (c != centerC - 2 && c != centerC + 2) { // Create gaps for entry
+                addIcePosition(centerR, c);
+            }
+        }
+        
+        // Vertical bar of the plus
+        for (int r = centerR - 3; r <= centerR + 3; r++) {
+            if (r != centerR - 1 && r != centerR + 1) { // Create gaps for entry
+                addIcePosition(r, centerC);
+            }
+        }
+        
+        // Add some interior walls in the central chamber
+        addIcePosition(centerR - 1, centerC - 1);
+        addIcePosition(centerR + 1, centerC + 1);
+        addIcePosition(centerR - 1, centerC + 1);
+        addIcePosition(centerR + 1, centerC - 1);
+        
+        // Store fruit positions in each quadrant
+        addFruitPosition(5, 4);    // Top-left
+        addFruitPosition(6, 10);   // Top-right
+        addFruitPosition(22, 3);   // Bottom-left
+        addFruitPosition(19, 11);  // Bottom-right
+        
+        // Store fire positions near the central chamber entrances
+        addFogoPosition(centerR, centerC - 3);  // Left entry
+        addFogoPosition(centerR, centerC + 3);  // Right entry
+        addFogoPosition(centerR - 2, centerC);  // Top entry
+        addFogoPosition(centerR + 2, centerC);  // Bottom entry
+        
+        // Add some additional fire hazards in challenging spots
+        addFogoPosition(3, 7);     // Near top maze
+        addFogoPosition(26, 7);    // Near bottom maze
+        
+        // Store villain positions guarding the central chamber
+        addVillainPosition(centerR - 2, centerC - 2);  // Northwest of center
+        addVillainPosition(centerR - 2, centerC + 2);  // Northeast of center
+        addVillainPosition(centerR + 2, centerC - 2);  // Southwest of center
+        addVillainPosition(centerR + 2, centerC + 2);  // Southeast of center
     }
     
     public void addIcePosition(int linha, int coluna) {
