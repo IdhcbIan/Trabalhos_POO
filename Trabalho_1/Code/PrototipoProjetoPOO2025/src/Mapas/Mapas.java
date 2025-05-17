@@ -166,8 +166,8 @@ public class Mapas implements Serializable {
             addIcePosition(i, 14);
         }
 
-        // Create a spiral pattern of ice blocks
-        // Outer layer of spiral (clockwise from top-left)
+        // Create a spiral pattern of ice blocks with openings at different positions
+        // Outer layer of spiral - opening on the LEFT side
         for (int i = 2; i <= 12; i++) {
             addIcePosition(2, i); // Top horizontal line
         }
@@ -177,33 +177,53 @@ public class Mapas implements Serializable {
         for (int i = 11; i >= 2; i--) {
             addIcePosition(12, i); // Bottom horizontal line
         }
-        for (int i = 11; i >= 4; i--) {
-            addIcePosition(i, 2); // Left vertical line (leaving an entrance)
+        // Left vertical line with gap in the middle
+        for (int i = 11; i >= 8; i--) {
+            addIcePosition(i, 2); // Bottom portion
         }
+        for (int i = 6; i >= 3; i--) {
+            addIcePosition(i, 2); // Top portion
+        }
+        // This creates an opening at (7, 2)
 
-        // Second layer of spiral (clockwise from top-left)
-        for (int i = 4; i <= 10; i++) {
-            addIcePosition(4, i); // Top horizontal line
+        // Second layer of spiral - opening on the TOP side
+        // Top horizontal line with gap in the middle
+        for (int i = 4; i <= 6; i++) {
+            addIcePosition(4, i); // Left portion
         }
+        for (int i = 8; i <= 10; i++) {
+            addIcePosition(4, i); // Right portion
+        }
+        // This creates an opening at (4, 7)
+
         for (int i = 5; i <= 10; i++) {
             addIcePosition(i, 10); // Right vertical line
         }
+
+        // Bottom horizontal line (complete, no gap)
         for (int i = 9; i >= 4; i--) {
-            addIcePosition(10, i); // Bottom horizontal line
-        }
-        for (int i = 9; i >= 6; i--) {
-            addIcePosition(i, 4); // Left vertical line (leaving an entrance)
+            addIcePosition(10, i); // Full bottom line
         }
 
-        // Inner layer of spiral (clockwise from top-left)
+        for (int i = 9; i >= 5; i--) {
+            addIcePosition(i, 4); // Left vertical line
+        }
+
+        // Inner layer of spiral - opening on the BOTTOM side
         for (int i = 6; i <= 8; i++) {
             addIcePosition(6, i); // Top horizontal line
         }
+
         for (int i = 7; i <= 8; i++) {
-            addIcePosition(i, 8); // Right vertical line
+            addIcePosition(i, 8); // Right vertical line (complete)
         }
-        addIcePosition(8, 7); // Bottom horizontal line (partial)
-        addIcePosition(8, 6); // Bottom horizontal line (partial)
+
+        // Bottom horizontal line with gap in the middle
+        addIcePosition(8, 6); // Left portion
+        addIcePosition(8, 8); // Right portion
+        // This creates an opening at (8, 7)
+
+        addIcePosition(7, 6); // Left vertical line
     }
 
 
@@ -301,10 +321,90 @@ public class Mapas implements Serializable {
 
 
     private void initializeLevel4Map() {
-        // Placeholder for level 4 map configuration
-        setHeroStartPosition(1, 1);
+                
+        // Top edge
+        for (int i = 0; i < 15; i++) {
+            addIcePosition(0, i);
+        }
+
+        // Bottom edge
+        for (int i = 0; i < 15; i++) {
+            addIcePosition(14, i);
+        }
+
+        // Left edge
+        for (int i = 1; i < 14; i++) {
+            addIcePosition(i, 0);
+        }
+
+        // Right edge
+        for (int i = 1; i < 14; i++) {
+            addIcePosition(i, 14);
+        }
+
+        // Create a spiral pattern of ice blocks with openings at different positions
+        // Outer layer of spiral - opening on the LEFT side
+        for (int i = 2; i <= 12; i++) {
+            addIcePosition(2, i); // Top horizontal line
+        }
+        for (int i = 3; i <= 12; i++) {
+            addIcePosition(i, 12); // Right vertical line
+        }
+        for (int i = 11; i >= 2; i--) {
+            addIcePosition(12, i); // Bottom horizontal line
+        }
+        // Left vertical line with gap in the middle
+        for (int i = 11; i >= 8; i--) {
+            addIcePosition(i, 2); // Bottom portion
+        }
+        for (int i = 6; i >= 3; i--) {
+            addIcePosition(i, 2); // Top portion
+        }
+        // This creates an opening at (7, 2)
+
+        // Second layer of spiral - opening on the TOP side
+        // Top horizontal line with gap in the middle
+        for (int i = 4; i <= 6; i++) {
+            addIcePosition(4, i); // Left portion
+        }
+        for (int i = 8; i <= 10; i++) {
+            addIcePosition(4, i); // Right portion
+        }
+        // This creates an opening at (4, 7)
+
+        for (int i = 5; i <= 10; i++) {
+            addIcePosition(i, 10); // Right vertical line
+        }
+
+        // Bottom horizontal line (complete, no gap)
+        for (int i = 9; i >= 4; i--) {
+            addIcePosition(10, i); // Full bottom line
+        }
+
+        for (int i = 9; i >= 5; i--) {
+            addIcePosition(i, 4); // Left vertical line
+        }
+
+        // Inner layer of spiral - opening on the BOTTOM side
+        for (int i = 6; i <= 8; i++) {
+            addIcePosition(6, i); // Top horizontal line
+        }
+
+        for (int i = 7; i <= 8; i++) {
+            addIcePosition(i, 8); // Right vertical line (complete)
+        }
+
+        // Bottom horizontal line with gap in the middle
+        addIcePosition(8, 6); // Left portion
+        addIcePosition(8, 8); // Right portion
+        // This creates an opening at (8, 7)
+
+        addIcePosition(7, 6); // Left vertical line
     }
-    
+
+
+
+
     private void initializeLevel5Map() {
         // Hero starts in the northwest corner
         setHeroStartPosition(1, 1);

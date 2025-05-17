@@ -2,8 +2,9 @@ package Controler;
 
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
-import Modelo.SuccessoNotification;
 import Modelo.FracassoNotification;
+import Modelo.Hero;
+import Modelo.SuccessoNotification;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -13,7 +14,6 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import Modelo.Hero;
 
 public class TelaView extends JFrame {
     private TelaController controller;

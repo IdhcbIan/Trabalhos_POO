@@ -61,10 +61,10 @@ public class Fases {
         addFruta(25, 4);
 
         // Add villains - uncomment and modify as needed
-        addVilao(4, 1, true); 
-        addVilao(11, 1, true); 
-        addVilao(18, 1, true); 
-        addVilao(25, 1, true); 
+        addVilao(4, 1, 12, 1, true); 
+        addVilao(11, 1, 12, 1, true); 
+        addVilao(18, 1, 12, 1, true); 
+        addVilao(25, 1, 12, 1, true); 
     }
 
     // 222222222222222222222222222222222222222222222222222222222
@@ -75,14 +75,18 @@ public class Fases {
         // Add fruits
         addFruta(1, 10);
         addFruta(3, 8);
-        addFruta(5, 6);
-        addFruta(7, 4);
+        addFruta(5, 5, 4);
     
+        addFrutaVert(7, 7, 1);
         addFrutaVert(6, 9);
+        addFrutaVert(5, 13, 5);
 
+        addFruta(11, 5, 6);
+        addFruta(13, 7, 6);
 
         // Add villains
-        addVilao(3, 1, true);
+        addVilao(3, 3, 8, 1);
+        addVilao(9, 5, 4, 2);
     }
 
     // 333333333333333333333333333333333333333333333333333333333
@@ -106,10 +110,22 @@ public class Fases {
     private void configureLevel4() {
         hero.setPosicao(1, 1);
         
+        // Add fruits similar to level 2
         addFruta(1, 10);
         addFruta(3, 8);
-        addFruta(5, 6);
-        addFruta(7, 4);
+        addFruta(5, 5, 4);
+
+        addFrutaVert(7, 7, 1);
+        addFrutaVert(6, 9);
+        addFrutaVert(5, 13, 5);
+
+        addFruta(11, 5, 6);
+        addFruta(13, 7, 6);
+
+        // Add shooting villains (Villan_2) at similar positions to level 2's villains
+        addVilao2(3, 3, 20, true);   // Similar position to first villain in level 2, shoots right
+        addVilao2(9, 5, 20, false);  // Similar position to second villain in level 2, shoots left
+        addVilao2(13, 10, 20, false); // New villain, shoots left
     }
 
     // 555555555555555555555555555555555555555555555555555555555
@@ -174,10 +190,47 @@ public class Fases {
         this.elementos.add(fruta);
     }
 
+    private void addFruta(int linha, int coluna, int walkSteps) {
+        Fruta fruta = new Fruta("Fruit_1.png", walkSteps);
+        fruta.setPosicao(linha, coluna);
+        this.elementos.add(fruta);
+    }
+
     private void addVilao(int linha, int coluna, boolean isZigueZague) {
+        // Use default constructor (12 blocks) if method is called with old signature
         Villan_1 vilao = new Villan_1("Villan_2.png");
         vilao.setPosicao(linha, coluna);
         this.elementos.add(vilao);
+    }
+
+    // Keep the existing method that accepts just walkBlocks
+    private void addVilao(int linha, int coluna, int walkBlocks) {
+        Villan_1 vilao = new Villan_1("Villan_2.png", walkBlocks);
+        vilao.setPosicao(linha, coluna);
+        this.elementos.add(vilao);
+    }
+
+    // Method with boolean as the fourth parameter (existing method)
+    private void addVilao(int linha, int coluna, int walkBlocks, boolean isZigueZague) {
+        Villan_1 vilao = new Villan_1("Villan_2.png", walkBlocks);
+        vilao.setPosicao(linha, coluna);
+        this.elementos.add(vilao);
+        // isZigueZague parameter is reserved for future use
+    }
+
+    // ADD THIS NEW METHOD: Method with moveRate as the fourth parameter
+    private void addVilao(int linha, int coluna, int walkBlocks, int moveRate) {
+        Villan_1 vilao = new Villan_1("Villan_2.png", walkBlocks, moveRate);
+        vilao.setPosicao(linha, coluna);
+        this.elementos.add(vilao);
+    }
+
+    // Method with all parameters
+    private void addVilao(int linha, int coluna, int walkBlocks, int moveRate, boolean isZigueZague) {
+        Villan_1 vilao = new Villan_1("Villan_2.png", walkBlocks, moveRate);
+        vilao.setPosicao(linha, coluna);
+        this.elementos.add(vilao);
+        // isZigueZague parameter is reserved for future use
     }
 
     private void addIceBarriers() {
@@ -206,6 +259,12 @@ public class Fases {
 
     private void addFrutaVert(int linha, int coluna) {
         FrutaVert frutaVert = new FrutaVert("Fruit_2.png");
+        frutaVert.setPosicao(linha, coluna);
+        this.elementos.add(frutaVert);
+    }
+
+    private void addFrutaVert(int linha, int coluna, int walkSteps) {
+        FrutaVert frutaVert = new FrutaVert("Fruit_2.png", walkSteps);
         frutaVert.setPosicao(linha, coluna);
         this.elementos.add(frutaVert);
     }

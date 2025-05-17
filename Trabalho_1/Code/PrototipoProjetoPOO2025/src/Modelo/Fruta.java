@@ -10,15 +10,20 @@ public class Fruta extends Personagem implements Serializable {
     private boolean bRight;
     private static final double SCALE_FACTOR = 0.8; 
     private int steps;
-    private int maxSteps = 3;
+    private int maxSteps = 3;  // Default value
     private static int totalFrutas = 0;  // Track total fruits
     private static int frutasColetadas = 0;  // Track collected fruits
     private boolean coletada = false;  // Track if this fruit has been collected
 
     public Fruta(String sNomeImagePNG) {
+        this(sNomeImagePNG, 3);  // Call the new constructor with default value
+    }
+    
+    public Fruta(String sNomeImagePNG, int walkSteps) {
         super(sNomeImagePNG);
         bRight = true;
         steps = 0;
+        maxSteps = walkSteps;
         resizeImage();
         totalFrutas++;  // Increment total fruits when a new one is created
     }

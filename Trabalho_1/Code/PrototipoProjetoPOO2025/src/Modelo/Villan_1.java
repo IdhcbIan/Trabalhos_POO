@@ -5,22 +5,42 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
-import Modelo.FracassoNotification;
 
 public class Villan_1 extends Personagem implements Serializable {
     private boolean bRight;
     private static final double SCALE_FACTOR = 30;  // Increased from 20 to 30
     private int steps;
-    private int maxSteps = 12;  // Added maxSteps variable with default value 3
-    private static int totalVillans = 0;  // Added to match the pattern in Fruta class
-    private static int villansColetadas = 0;  // Added to match the pattern in Fruta class
+    private int maxSteps = 12;  // Default value
+    private static int totalVillans = 0;
+    private static int villansColetadas = 0;
+    private int moveCounter = 0;
+    private int moveRate = 1;  // Default: move every tick
 
     public Villan_1(String sNomeImagePNG) {
         super(sNomeImagePNG);
         bRight = true;
         steps = 0;
         resizeImage();
-        totalVillans++;  // Increment counter when created
+        totalVillans++;
+    }
+    
+    public Villan_1(String sNomeImagePNG, int walkBlocks) {
+        super(sNomeImagePNG);
+        bRight = true;
+        steps = 0;
+        maxSteps = walkBlocks;
+        resizeImage();
+        totalVillans++;
+    }
+    
+    public Villan_1(String sNomeImagePNG, int walkBlocks, int moveRate) {
+        super(sNomeImagePNG);
+        bRight = true;
+        steps = 0;
+        maxSteps = walkBlocks;
+        this.moveRate = moveRate;
+        resizeImage();
+        totalVillans++;
     }
     
     /**
@@ -70,15 +90,38 @@ public class Villan_1 extends Personagem implements Serializable {
     public void autoDesenho(){
         // Only move if the game is not over
         if (!Hero.isGameOver()) {
-            if(bRight)
-                this.setPosicao(pPosicao.getLinha(), pPosicao.getColuna()+1);
-            else
-                this.setPosicao(pPosicao.getLinha(), pPosicao.getColuna()-1);           
-            
-            steps++;
-            if(steps >= maxSteps) {
-                bRight = !bRight;
-                steps = 0;
+            moveCounter++;
+            if (moveCounter >= moveRate) {
+                moveCounter = 0;
+                
+                int nextCol;
+                if(bRight)
+                    nextCol = pPosicao.getColuna() + 1;
+                else
+                    nextCol = pPosicao.getColuna() - 1;
+                
+                // Save current position
+                int currentCol = pPosicao.getColuna();
+                int currentLinha = pPosicao.getLinha();
+                
+                // Try to move
+                this.setPosicao(currentLinha, nextCol);
+                
+                // Check if movement was blocked (by comparing if position actually changed)
+                if (pPosicao.getColuna() != nextCol) {
+                    // Movement was blocked, change direction
+                    bRight = !bRight;
+                    steps = 0;
+                    // Reset to original position
+                    this.setPosicao(currentLinha, currentCol);
+                } else {
+                    // Movement was successful
+                    steps++;
+                    if(steps >= maxSteps) {
+                        bRight = !bRight;
+                        steps = 0;
+                    }
+                }
             }
         }
         
@@ -102,5 +145,10 @@ public class Villan_1 extends Personagem implements Serializable {
     public void matarHero(Hero hero) {
         System.out.println("Hero killed by villain!"); // Debug message
         hero.morrer();
+    }
+
+    // Add setter method for moveRate
+    public void setMoveRate(int moveRate) {
+        this.moveRate = moveRate;
     }
 }
