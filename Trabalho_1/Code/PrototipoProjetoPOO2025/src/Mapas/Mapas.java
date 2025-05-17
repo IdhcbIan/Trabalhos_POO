@@ -391,27 +391,9 @@ public class Mapas implements Serializable {
         addIcePosition(centerR - 1, centerC + 1);
         addIcePosition(centerR + 1, centerC - 1);
         
-        // Store fruit positions in each quadrant
-        addFruitPosition(5, 4);    // Top-left
-        addFruitPosition(6, 10);   // Top-right
-        addFruitPosition(22, 3);   // Bottom-left
-        addFruitPosition(19, 11);  // Bottom-right
-        
-        // Store fire positions near the central chamber entrances
-        addFogoPosition(centerR, centerC - 3);  // Left entry
-        addFogoPosition(centerR, centerC + 3);  // Right entry
-        addFogoPosition(centerR - 2, centerC);  // Top entry
-        addFogoPosition(centerR + 2, centerC);  // Bottom entry
-        
-        // Add some additional fire hazards in challenging spots
-        addFogoPosition(3, 7);     // Near top maze
-        addFogoPosition(26, 7);    // Near bottom maze
-        
-        // Store villain positions guarding the central chamber
-        addVillainPosition(centerR - 2, centerC - 2);  // Northwest of center
-        addVillainPosition(centerR - 2, centerC + 2);  // Northeast of center
-        addVillainPosition(centerR + 2, centerC - 2);  // Southwest of center
-        addVillainPosition(centerR + 2, centerC + 2);  // Southeast of center
+        // Add villain positions for Level 5
+        // Choose an appropriate position for the Villain_3
+        addVillainPosition(13, 7); // Example position - adjust as needed
     }
     
     public void addIcePosition(int linha, int coluna) {
