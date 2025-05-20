@@ -4,11 +4,13 @@ import Modelo.*;
 import auxiliar.Posicao;
 import java.util.ArrayList;
 
+
 public class Fases {
     private int level;
     private ArrayList<Personagem> elementos;
     private Hero hero;
     private Mapas mapa;
+    public int totalFrutas = 0;
 
     public Fases(int level) {
         this.level = level;
@@ -21,9 +23,11 @@ public class Fases {
         // Create hero
         hero = new Hero("Char_1.png");
         
+        // Reset fruit counters
+        Fruta.resetContadores();
+        
         // Add ice barriers from map
         addIceBarriers();
-
 
         // Configure level based on level number
         switch(level) {
@@ -47,6 +51,10 @@ public class Fases {
         }
 
         this.elementos.add(hero);
+        
+        // Debug output
+        System.out.println("Level " + level + " initialized with " + 
+                          Fruta.getTotalFrutas() + " total fruits.");
     }
     
     // 11111111111111111111111111111111111111111111111111111111111
@@ -123,8 +131,8 @@ public class Fases {
         addFruta(13, 7, 6);
 
         // Add shooting villains (Villan_2) at similar positions to level 2's villains
-        addVilao2(3, 3, 20, true);   // Similar position to first villain in level 2, shoots right
-        addVilao2(9, 5, 20, false);  // Similar position to second villain in level 2, shoots left
+        addVilao2(3, 3, 50, true);   // Similar position to first villain in level 2, shoots right
+        addVilao2(9, 5, 20, false);  // Similar position to second villain in level 2, shoots left (shooting slower now)
         addVilao2(13, 10, 20, false); // New villain, shoots left
     }
 
@@ -188,12 +196,14 @@ public class Fases {
         Fruta fruta = new Fruta("Fruit_1.png");
         fruta.setPosicao(linha, coluna);
         this.elementos.add(fruta);
+        totalFrutas++;
     }
 
     private void addFruta(int linha, int coluna, int walkSteps) {
         Fruta fruta = new Fruta("Fruit_1.png", walkSteps);
         fruta.setPosicao(linha, coluna);
         this.elementos.add(fruta);
+        totalFrutas++;
     }
 
     private void addVilao(int linha, int coluna, boolean isZigueZague) {
@@ -261,12 +271,14 @@ public class Fases {
         FrutaVert frutaVert = new FrutaVert("Fruit_2.png");
         frutaVert.setPosicao(linha, coluna);
         this.elementos.add(frutaVert);
+        totalFrutas++;
     }
 
     private void addFrutaVert(int linha, int coluna, int walkSteps) {
         FrutaVert frutaVert = new FrutaVert("Fruit_2.png", walkSteps);
         frutaVert.setPosicao(linha, coluna);
         this.elementos.add(frutaVert);
+        totalFrutas++;
     }
 
     public ArrayList<Personagem> getElementos() {

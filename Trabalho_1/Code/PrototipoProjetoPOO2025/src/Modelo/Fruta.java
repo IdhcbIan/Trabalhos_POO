@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
 
-public class Fruta extends Personagem implements Serializable {
+public class Fruta extends Personagem implements Serializable, Coletavel {
     private boolean bRight;
     private static final double SCALE_FACTOR = 0.8; 
     private int steps;
@@ -67,16 +67,17 @@ public class Fruta extends Personagem implements Serializable {
         if (!coletada) {
             coletada = true;
             frutasColetadas++;
-            System.out.println("Frutas coletadas: " + frutasColetadas + " de " + totalFrutas);
+            System.out.println("Fruta coletada! Total: " + frutasColetadas + " de " + totalFrutas);
             verificarSucesso();
         }
     }
     
-    // Add method to check for success
+    // Modified method to check for success
     public static void verificarSucesso() {
-        if (frutasColetadas >= totalFrutas && totalFrutas > 0) {
-            System.out.println("Todas as frutas foram coletadas!");
-            mostrarSucesso();
+        int total = Fruta.getTotalFrutas() + FrutaVert.getTotalFrutasVert();
+        int coletadas = Fruta.getFrutasColetadas() + FrutaVert.getFrutasVertColetadas();
+        if (coletadas == total) {
+            System.out.println("Sucesso! Todas as frutas foram coletadas!");
         }
     }
     
@@ -88,7 +89,36 @@ public class Fruta extends Personagem implements Serializable {
     
     // Add method to manually reset counters if needed
     public static void resetContadores() {
+        System.out.println("DEBUG: Resetting fruit counters");
         totalFrutas = 0;
         frutasColetadas = 0;
+    }
+
+    public boolean isColetada() {
+        return coletada;
+    }
+
+    @Override
+    public boolean foiColetado() {
+        return isColetada();
+    }
+
+    // Add this method to allow FrutaVert to increment collected count
+    public static void incrementarFrutasColetadas() {
+        frutasColetadas++;
+        System.out.println("Fruta coletada via incrementarFrutasColetadas! Total: " + frutasColetadas + " de " + totalFrutas);
+    }
+
+    public static int getFrutasColetadas() {
+        return frutasColetadas;
+    }
+
+    public static int getTotalFrutas() {
+        return totalFrutas;
+    }
+
+    // Add this method for adding to the total
+    public static void incrementarTotalFrutas() {
+        totalFrutas++;
     }
 }

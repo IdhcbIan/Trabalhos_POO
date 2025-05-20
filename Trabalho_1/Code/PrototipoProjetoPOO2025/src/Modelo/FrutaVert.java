@@ -6,14 +6,15 @@ import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
 
-public class FrutaVert extends Personagem implements Serializable {
+public class FrutaVert extends Personagem implements Serializable, Coletavel {
     private boolean bDown;  // Changed from bRight to bDown
     private static final double SCALE_FACTOR = 0.8; 
     private int steps;
     private int maxSteps = 3;  // Default value
-    private static int totalFrutas = 0;  // Track total fruits
-    private static int frutasColetadas = 0;  // Track collected fruits
     private boolean coletada = false;  // Track if this fruit has been collected
+    // Add static counters for FrutaVert
+    private static int totalFrutasVert = 0;
+    private static int frutasVertColetadas = 0;
 
     public FrutaVert(String sNomeImagePNG) {
         this(sNomeImagePNG, 3);  // Call the new constructor with default value
@@ -25,7 +26,8 @@ public class FrutaVert extends Personagem implements Serializable {
         steps = 0;
         maxSteps = walkSteps;
         resizeImage();
-        totalFrutas++;  // Increment total fruits when a new one is created
+        Fruta.incrementarTotalFrutas(); // <-- Existing line
+        totalFrutasVert++; // <-- Add this line
     }
     
     private void resizeImage() {
@@ -66,29 +68,35 @@ public class FrutaVert extends Personagem implements Serializable {
     public void coletar() {
         if (!coletada) {
             coletada = true;
-            frutasColetadas++;
-            System.out.println("Frutas verticais coletadas: " + frutasColetadas + " de " + totalFrutas);
-            verificarSucesso();
+            Fruta.incrementarFrutasColetadas(); // Existing
+            frutasVertColetadas++; // <-- Add this line
+            System.out.println("Fruta vertical coletada! Total coletadas: " + 
+                               getFrutasVertColetadas() + " de " + getTotalFrutasVert());
+            Fruta.verificarSucesso(); // Use the verificarSucesso from Fruta class
         }
     }
-    
-    // Add method to check for success
-    public static void verificarSucesso() {
-        if (frutasColetadas >= totalFrutas && totalFrutas > 0) {
-            System.out.println("Todas as frutas verticais foram coletadas!");
-            mostrarSucesso();
-        }
+
+
+    // Add this method to allow FrutaVert to increment collected count
+    public static void incrementarFrutasVertColetadas() {
+        frutasVertColetadas++;
     }
-    
-    // Method to show success message in the middle of the screen
-    public static void mostrarSucesso() {
-        // Create a reference to the notification system
-        SuccessoNotification.getInstance().showSuccessMessage("SUCESSO!!");
+
+    public boolean isColetada() {
+        return coletada;
     }
-    
-    // Method to manually reset counters if needed
-    public static void resetContadores() {
-        totalFrutas = 0;
-        frutasColetadas = 0;
+
+    @Override
+    public boolean foiColetado() {
+        return isColetada();
+    }
+
+    // Static getters for counters
+    public static int getTotalFrutasVert() {
+        return totalFrutasVert;
+    }
+
+    public static int getFrutasVertColetadas() {
+        return frutasVertColetadas;
     }
 }

@@ -12,6 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import Modelo.Fruta;
 
 public class TelaController implements MouseListener, KeyListener {
     private Hero hero;
@@ -59,54 +60,64 @@ public class TelaController implements MouseListener, KeyListener {
     }
     
     // Add this method to load phases
-    public void carregarFase(int nivel) {
-        // Create a new phase instance
-        fase = new Fases(nivel);
+    public void carregarFase(int numeroFase) {
+        // Reset the fruit counters before loading a new phase
+        Fruta.resetContadores();
         
-        // Clear any existing elements
-        faseAtual.clear();
+        // Clear existing phase elements
+        this.faseAtual.clear();
         
-        // Get all elements from the phase
-        faseAtual.addAll(fase.getElementos());
+        // Load the new phase
+        this.fase = new Fases(numeroFase);
+        this.faseAtual.addAll(this.fase.getElementos());
+        this.hero = this.fase.getHero();
         
-        // Get hero reference for camera and controls
-        hero = fase.getHero();
-        
-        // Make sure hero is not null
-        if (hero == null) {
-            System.err.println("ERROR: Hero is null in phase " + nivel);
-            return;
+        // Update camera and view if available
+        if (this.cameraManager != null && this.hero != null) {
+            this.cameraManager.atualizaCamera(hero);
         }
         
-        // Debugging: Print all elements loaded in the phase
-        System.out.println("Phase " + nivel + " loaded with " + faseAtual.size() + " elements");
-        for (Personagem p : faseAtual) {
-            System.out.println("  - " + p.getClass().getSimpleName() + 
-                    " at (" + p.getPosicao().getLinha() + "," + p.getPosicao().getColuna() + ")");
+        if (this.view != null) {
+            this.view.repaint();
         }
-        
-        // Update camera to hero position
-        this.cameraManager.atualizaCamera(hero);
     }
     
     // Add this method to check if all fruits are collected
     public void verificarFimDeFase() {
         // Check if there are any fruits left in the current phase
         boolean todasFrutasColetadas = true;
+        int totalFrutas = 0;
+        int coletadas = 0;
         
         for (Personagem p : faseAtual) {
-            // Check if any element is a fruit (you might need to adjust this check based on your class hierarchy)
-            if (p.getClass().getSimpleName().contains("Fruta")) {
-                todasFrutasColetadas = false;
-                break;
+            if (p instanceof Fruta || p instanceof FrutaVert) {
+                totalFrutas++;
+                if (isFrutaColetada(p)) {
+                    coletadas++;
+                } else {
+                    todasFrutasColetadas = false;
+                }
             }
         }
         
+        System.out.println("DEBUG TelaController: Frutas coletadas: " + coletadas + 
+                          " de " + totalFrutas + ", todas coletadas? " + todasFrutasColetadas);
+        
         // If all fruits are collected, show success message
-        if (todasFrutasColetadas && !Hero.isGameOver()) {
+        if (totalFrutas > 0 && todasFrutasColetadas && !Hero.isGameOver()) {
             SuccessoNotification.getInstance().showSuccessMessage("SUCESSO!!");
-            System.out.println("All fruits collected! Success!");
+            System.out.println("TelaController: All fruits collected! Success!");
         }
+    }
+    
+    // Helper method to check if a fruit has been collected
+    private boolean isFrutaColetada(Personagem p) {
+        if (p instanceof Fruta) {
+            return ((Fruta) p).isColetada();
+        } else if (p instanceof FrutaVert) {
+            return ((FrutaVert) p).isColetada();
+        }
+        return false;
     }
     
     @Override
