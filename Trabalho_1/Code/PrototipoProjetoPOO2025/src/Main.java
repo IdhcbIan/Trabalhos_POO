@@ -22,7 +22,7 @@ public class Main {
                 view.setCameraManager(cameraManager);
                 
                 // Load the first phase
-                controller.carregarFase(4);
+                controller.carregarFase(5);
                 
                 // Start the game loop
                 view.setVisible(true);

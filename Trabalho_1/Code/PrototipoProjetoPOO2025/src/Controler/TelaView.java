@@ -80,6 +80,10 @@ public class TelaView extends JFrame {
     }
     
     public void paint(Graphics gOld) {
+        // Update camera to follow hero before drawing
+        if (controller != null && cameraManager != null && controller.getHero() != null) {
+            cameraManager.atualizaCamera(controller.getHero());
+        }
         if (getBufferStrategy() == null) {
             // Create it if it doesn't exist yet
             this.createBufferStrategy(2);
