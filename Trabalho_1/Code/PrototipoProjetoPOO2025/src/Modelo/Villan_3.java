@@ -65,14 +65,18 @@ public class Villan_3 extends Personagem implements Serializable {
     
     @Override
     public void autoDesenho() {
-        // Follow the hero if game is not over and target is set
-        if (!Hero.isGameOver() && targetHero != null) {
+        // Check if game is over or frozen due to success notification
+        boolean isGameFrozen = Hero.isGameOver() || 
+                             (SuccessoNotification.getInstance().isVisible() && 
+                              SuccessoNotification.getInstance().isGameFreeze());
+        
+        // Follow the hero if game is not over/frozen and target is set
+        if (!isGameFrozen && targetHero != null) {
             moveCounter++;
             if (moveCounter >= moveRate) {
                 followHero();
                 moveCounter = 0;
             }
-
         }
         
         // Draw the villain using parent method

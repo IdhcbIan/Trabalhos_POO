@@ -90,7 +90,7 @@ public class TelaController implements MouseListener, KeyListener {
         int coletadas = 0;
         
         for (Personagem p : faseAtual) {
-            if (p instanceof Fruta || p instanceof FrutaVert) {
+            if (p instanceof Fruta || p instanceof Modelo.FrutaVert) {
                 totalFrutas++;
                 if (isFrutaColetada(p)) {
                     coletadas++;
@@ -105,8 +105,9 @@ public class TelaController implements MouseListener, KeyListener {
         
         // If all fruits are collected, show success message
         if (totalFrutas > 0 && todasFrutasColetadas && !Hero.isGameOver()) {
-            SuccessoNotification.getInstance().showSuccessMessage("SUCESSO!!");
-            System.out.println("TelaController: All fruits collected! Success!");
+            SuccessoNotification.getInstance()
+                .showSuccessMessage("Level Complete!\nAll fruits collected!");
+            view.repaint();   // <— immediate repaint
         }
     }
     
@@ -114,14 +115,45 @@ public class TelaController implements MouseListener, KeyListener {
     private boolean isFrutaColetada(Personagem p) {
         if (p instanceof Fruta) {
             return ((Fruta) p).isColetada();
-        } else if (p instanceof FrutaVert) {
-            return ((FrutaVert) p).isColetada();
+        } else if (p instanceof Modelo.FrutaVert) {
+            return ((Modelo.FrutaVert) p).foiColetado();
         }
         return false;
     }
-    
     @Override
     public void keyPressed(KeyEvent e) {
+        // Check if the success notification is visible and game is frozen
+        boolean isSuccessNotificationActive = SuccessoNotification.getInstance().isVisible() && 
+                                            SuccessoNotification.getInstance().isGameFreeze();
+        
+        // Handle 'n' key press to advance to next phase when success notification is shown
+        if (e.getKeyCode() == KeyEvent.VK_N && isSuccessNotificationActive) {
+            System.out.println("N key pressed, advancing to next phase");
+            // Unfreeze the game
+            SuccessoNotification.getInstance().setGameFreeze(false);
+            // Hide the success notification
+            SuccessoNotification.getInstance().showSuccessMessage(""); // This will reset the timer
+            SuccessoNotification.getInstance().update(); // Force update to hide it
+            
+            // Load the next phase if available
+            if (fase != null) {
+                int nextLevel = fase.getLevel() + 1;
+                // Check if next level exists (assuming max 5 levels)
+                if (nextLevel <= 5) {
+                    carregarFase(nextLevel);
+                } else {
+                    // If we're at the last level, show a game completion message
+                    SuccessoNotification.getInstance().showSuccessMessage("Congratulations!\nYou completed all levels!");
+                }
+            }
+            return; // Exit the method after handling 'n' key
+        }
+        
+        // If game is frozen due to success notification, don't process other inputs
+        if (isSuccessNotificationActive) {
+            return;
+        }
+        
         if (e.getKeyCode() == KeyEvent.VK_C) {
             this.faseAtual.clear();
         } else if (e.getKeyCode() >= KeyEvent.VK_1 && e.getKeyCode() <= KeyEvent.VK_5) {

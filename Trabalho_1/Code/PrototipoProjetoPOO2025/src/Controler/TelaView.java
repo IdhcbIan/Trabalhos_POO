@@ -25,7 +25,7 @@ import javax.swing.JFrame;
 public class TelaView extends JFrame {
     private TelaController controller;
     private CameraManager cameraManager;
-    private Graphics g2;
+    private Graphics2D g2;
     
     public TelaView() {
         Desenho.setCenario(this);
@@ -92,7 +92,7 @@ public class TelaView extends JFrame {
         
         Graphics g = this.getBufferStrategy().getDrawGraphics();
         /*Criamos um contexto gráfico*/
-        g2 = g.create(getInsets().left, getInsets().top, getWidth() - getInsets().right, getHeight() - getInsets().top);
+        g2 = (Graphics2D) g.create(getInsets().left, getInsets().top, getWidth() - getInsets().right, getHeight() - getInsets().top);
         /**
          * ***********Desenha cenário de fundo*************
          */
@@ -121,7 +121,7 @@ public class TelaView extends JFrame {
         }
         
         // Draw fruit counter in the top-left corner
-        drawFruitCounter((Graphics2D) g2);
+        drawFruitCounter(g2);
         
         // Check if game is over to ensure notification is visible
         if (Hero.isGameOver()) {
@@ -181,18 +181,19 @@ public class TelaView extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-    // Add this new method to draw the fruit counter
+
+
+
+    // Contador de Frutas!!
+
     private void drawFruitCounter(Graphics2D g2) {
-        // Save original font and color
         Font originalFont = g2.getFont();
         Color originalColor = g2.getColor();
         
-        // Set font and color for counter
         Font counterFont = new Font("Arial", Font.BOLD, 16);
         g2.setFont(counterFont);
         g2.setColor(Color.WHITE);
         
-        // Create counter text (sum Fruta and FrutaVert)
         int totalColetadas = 0;
         if (controller != null && controller.getFaseAtual() != null) {
             List<Personagem> faseAtual = controller.getFaseAtual();
@@ -221,7 +222,7 @@ public class TelaView extends JFrame {
         int frutasRestantes = totalFrutas - totalColetadas;
         
         // Check if all fruits have been collected and show success notification
-        if (frutasRestantes <= 0 && totalFrutas > 0) {
+        if (frutasRestantes <= 0) {
             System.out.println("TelaView: No fruits remaining, showing success notification");
             SuccessoNotification.getInstance().showSuccessMessage("Level Complete!\nAll fruits collected!");
         }

@@ -7,29 +7,25 @@ public class Main {
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                // Create the view
+                // Create the view, controller and camera manager
                 TelaView view = new TelaView();
-                
-                // Create the controller and camera manager
                 TelaController controller = new TelaController();
-                CameraManager cameraManager = new CameraManager();
+                CameraManager cam = new CameraManager();
                 
                 // Set up the connections between components
                 controller.setView(view);
-                controller.setCameraManager(cameraManager);
+                controller.setCameraManager(cam);
                 
                 view.setController(controller);
-                view.setCameraManager(cameraManager);
+                view.setCameraManager(cam);
                 
                 // Load the first phase
-                controller.carregarFase(5);
+                controller.carregarFase(1);
                 
                 // Start the game loop
                 view.setVisible(true);
-                view.go();
+                view.go();    // start the update+repaint timer
             }
         });
     }
 }
-
-

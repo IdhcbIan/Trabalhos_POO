@@ -88,8 +88,13 @@ public class Villan_1 extends Personagem implements Serializable {
     }
     
     public void autoDesenho(){
-        // Only move if the game is not over
-        if (!Hero.isGameOver()) {
+        // Check if game is over or frozen due to success notification
+        boolean isGameFrozen = Hero.isGameOver() || 
+                             (SuccessoNotification.getInstance().isVisible() && 
+                              SuccessoNotification.getInstance().isGameFreeze());
+        
+        // Only move if the game is not over and not frozen
+        if (!isGameFrozen) {
             moveCounter++;
             if (moveCounter >= moveRate) {
                 moveCounter = 0;

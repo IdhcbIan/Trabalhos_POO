@@ -84,8 +84,13 @@ public class Villan_2 extends Personagem implements Serializable {
     }
     
     public void autoDesenho(){
-        // Always process shooting logic, regardless of visibility
-        if (!Hero.isGameOver() && targetHero != null) {
+        // Check if game is over or frozen due to success notification
+        boolean isGameFrozen = Hero.isGameOver() || 
+                             (SuccessoNotification.getInstance().isVisible() && 
+                              SuccessoNotification.getInstance().isGameFreeze());
+        
+        // Only process shooting logic if game is not over or frozen
+        if (!isGameFrozen && targetHero != null) {
             cooldown++;
             if(cooldown >= maxCooldown) {
                 shootFireball();
@@ -160,7 +165,13 @@ public class Villan_2 extends Personagem implements Serializable {
     }
 
     public void processLogic() {
-        if (targetHero != null) {
+        // Check if game is over or frozen due to success notification
+        boolean isGameFrozen = Hero.isGameOver() || 
+                             (SuccessoNotification.getInstance().isVisible() && 
+                              SuccessoNotification.getInstance().isGameFreeze());
+        
+        // Only process logic if game is not over or frozen
+        if (!isGameFrozen && targetHero != null) {
             cooldown++;
             if(cooldown >= maxCooldown) {
                 shootFireball();
