@@ -21,12 +21,14 @@ public class Mapas implements Serializable {
         this.villainPositions = new ArrayList<>();
         this.fruitPositions = new ArrayList<>();
         this.fogoPositions = new ArrayList<>();
-        this.heroStartPosition = new Posicao(1, 1); // Default hero position
+        this.heroStartPosition = new Posicao(1, 1); 
         
-        // Initialize map layout based on level
         initializeMap();
     }
+   
     
+    // Switch case para Inicializar o Mapa!!
+
     private void initializeMap() {
         switch(level) {
             case 1:
@@ -54,27 +56,25 @@ public class Mapas implements Serializable {
     //------------ Level 1 --------------------------------------
     private void initializeLevel1Map() {
 
-        // Top Edge
+        // Bordas Do mapa
+
         for (int i = 0; i < 15; i++) {
             addIcePosition(0, i);
         }
         
-        // Bottom edge
         for (int i = 0; i < 15; i++) {
             addIcePosition(29, i);
         }
         
-        // Left edge
         for (int i = 1; i < 29; i++) {
             addIcePosition(i, 0);
         }
         
-        // Right edge
         for (int i = 1; i < 29; i++) {
             addIcePosition(i, 14);
         }
 
-
+        //------------------
 
 
         // Trap 1 (4)
@@ -109,6 +109,9 @@ public class Mapas implements Serializable {
             addIcePosition(12, i);
         }
 
+        //-----------------------------
+
+
         // Trap 3 (18)
         for (int i = 1; i < 8; i++) {
             addIcePosition(17, i);
@@ -123,6 +126,8 @@ public class Mapas implements Serializable {
         for (int i = 13; i < 14; i++) {
             addIcePosition(19, i);
         }
+        //-----------------------------
+
 
         // Trap 4  (25)
         for (int i = 1; i < 4; i++) {
@@ -138,6 +143,7 @@ public class Mapas implements Serializable {
         for (int i = 9; i < 14; i++) {
             addIcePosition(26, i);
         }
+        //-----------------------------
     }
 
 
@@ -146,84 +152,76 @@ public class Mapas implements Serializable {
     //------------ Level 2 --------------------------------------
     private void initializeLevel2Map() {
         
-        // Top edge
+        // Bordas Do mapa
         for (int i = 0; i < 15; i++) {
             addIcePosition(0, i);
         }
 
-        // Bottom edge
         for (int i = 0; i < 15; i++) {
             addIcePosition(14, i);
         }
 
-        // Left edge
         for (int i = 1; i < 14; i++) {
             addIcePosition(i, 0);
         }
-
-        // Right edge
         for (int i = 1; i < 14; i++) {
             addIcePosition(i, 14);
         }
 
-        // Create a spiral pattern of ice blocks with openings at different positions
-        // Outer layer of spiral - opening on the LEFT side
+        // Espiral!!
+
         for (int i = 2; i <= 12; i++) {
-            addIcePosition(2, i); // Top horizontal line
+            addIcePosition(2, i); 
         }
         for (int i = 3; i <= 12; i++) {
-            addIcePosition(i, 12); // Right vertical line
+            addIcePosition(i, 12); 
         }
         for (int i = 11; i >= 2; i--) {
-            addIcePosition(12, i); // Bottom horizontal line
+            addIcePosition(12, i); 
         }
-        // Left vertical line with gap in the middle
+        
         for (int i = 11; i >= 8; i--) {
-            addIcePosition(i, 2); // Bottom portion
+            addIcePosition(i, 2); 
         }
         for (int i = 6; i >= 3; i--) {
-            addIcePosition(i, 2); // Top portion
+            addIcePosition(i, 2); 
         }
-        // This creates an opening at (7, 2)
 
-        // Second layer of spiral - opening on the TOP side
-        // Top horizontal line with gap in the middle
+        // Segunda camada!!
+
         for (int i = 4; i <= 6; i++) {
-            addIcePosition(4, i); // Left portion
+            addIcePosition(4, i); 
         }
         for (int i = 8; i <= 10; i++) {
-            addIcePosition(4, i); // Right portion
+            addIcePosition(4, i); 
         }
-        // This creates an opening at (4, 7)
 
         for (int i = 5; i <= 10; i++) {
-            addIcePosition(i, 10); // Right vertical line
+            addIcePosition(i, 10); 
         }
 
-        // Bottom horizontal line (complete, no gap)
         for (int i = 9; i >= 4; i--) {
-            addIcePosition(10, i); // Full bottom line
+            addIcePosition(10, i); 
         }
 
         for (int i = 9; i >= 5; i--) {
-            addIcePosition(i, 4); // Left vertical line
+            addIcePosition(i, 4); 
         }
 
-        // Inner layer of spiral - opening on the BOTTOM side
+        // Terceira camada!!
+
         for (int i = 6; i <= 8; i++) {
-            addIcePosition(6, i); // Top horizontal line
+            addIcePosition(6, i); 
         }
 
         for (int i = 7; i <= 8; i++) {
-            addIcePosition(i, 8); // Right vertical line (complete)
+            addIcePosition(i, 8); 
         }
 
-        // Bottom horizontal line with gap in the middle
-        addIcePosition(8, 6); // Left portion
-        addIcePosition(8, 8); // Right portion
-        // This creates an opening at (8, 7)
+        addIcePosition(8, 6); 
+        addIcePosition(8, 8); 
 
-        addIcePosition(7, 6); // Left vertical line
+        addIcePosition(7, 6); 
     }
 
 
@@ -232,22 +230,19 @@ public class Mapas implements Serializable {
     //------------ Level 3 --------------------------------------
     private void initializeLevel3Map() {
 
-        // Top Edge
+        // Bordas Do mapa
         for (int i = 0; i < 15; i++) {
             addIcePosition(0, i);
         }
         
-        // Bottom edge
         for (int i = 0; i < 15; i++) {
             addIcePosition(29, i);
         }
         
-        // Left edge
         for (int i = 1; i < 29; i++) {
             addIcePosition(i, 0);
         }
         
-        // Right edge
         for (int i = 1; i < 29; i++) {
             addIcePosition(i, 14);
         }
@@ -286,7 +281,9 @@ public class Mapas implements Serializable {
         for (int i = 4; i < 14; i++) {
             addIcePosition(12, i);
         }
+        //-----------------------------
 
+        
         // Trap 3 (18)
         for (int i = 1; i < 4; i++) {
             addIcePosition(17, i);
@@ -301,6 +298,7 @@ public class Mapas implements Serializable {
         for (int i = 13; i < 14; i++) {
             addIcePosition(19, i);
         }
+        //-----------------------------
 
 
         // Trap 4  (25)
@@ -322,94 +320,85 @@ public class Mapas implements Serializable {
 
     private void initializeLevel4Map() {
                 
-        // Top edge
+        // Bordas Do mapa
         for (int i = 0; i < 15; i++) {
             addIcePosition(0, i);
         }
 
-        // Bottom edge
         for (int i = 0; i < 15; i++) {
             addIcePosition(14, i);
         }
 
-        // Left edge
+        for (int i = 1; i < 14; i++) {
+            addIcePosition(i, 0);
+        }
         for (int i = 1; i < 14; i++) {
             addIcePosition(i, 0);
         }
 
-        // Right edge
         for (int i = 1; i < 14; i++) {
             addIcePosition(i, 14);
         }
 
-        // Create a spiral pattern of ice blocks with openings at different positions
-        // Outer layer of spiral - opening on the LEFT side
+        // Espiral!!
         for (int i = 2; i <= 12; i++) {
-            addIcePosition(2, i); // Top horizontal line
+            addIcePosition(2, i); 
         }
         for (int i = 3; i <= 12; i++) {
-            addIcePosition(i, 12); // Right vertical line
+            addIcePosition(i, 12); 
         }
         for (int i = 11; i >= 2; i--) {
-            addIcePosition(12, i); // Bottom horizontal line
+            addIcePosition(12, i); 
         }
-        // Left vertical line with gap in the middle
+        
         for (int i = 11; i >= 8; i--) {
-            addIcePosition(i, 2); // Bottom portion
+            addIcePosition(i, 2); 
         }
         for (int i = 6; i >= 3; i--) {
-            addIcePosition(i, 2); // Top portion
+            addIcePosition(i, 2); 
         }
-        // This creates an opening at (7, 2)
 
-        // Second layer of spiral - opening on the TOP side
-        // Top horizontal line with gap in the middle
+        // Segunda camada!!
         for (int i = 4; i <= 6; i++) {
-            addIcePosition(4, i); // Left portion
+            addIcePosition(4, i); 
         }
         for (int i = 8; i <= 10; i++) {
-            addIcePosition(4, i); // Right portion
+            addIcePosition(4, i); 
         }
-        // This creates an opening at (4, 7)
 
         for (int i = 5; i <= 10; i++) {
-            addIcePosition(i, 10); // Right vertical line
+            addIcePosition(i, 10); 
         }
 
-        // Bottom horizontal line (complete, no gap)
         for (int i = 9; i >= 4; i--) {
-            addIcePosition(10, i); // Full bottom line
+            addIcePosition(10, i); 
         }
 
         for (int i = 9; i >= 5; i--) {
-            addIcePosition(i, 4); // Left vertical line
+            addIcePosition(i, 4); 
         }
 
-        // Inner layer of spiral - opening on the BOTTOM side
+        // Terceira camada!!
         for (int i = 6; i <= 8; i++) {
-            addIcePosition(6, i); // Top horizontal line
+            addIcePosition(6, i); 
         }
 
         for (int i = 7; i <= 8; i++) {
-            addIcePosition(i, 8); // Right vertical line (complete)
+            addIcePosition(i, 8); 
         }
 
-        // Bottom horizontal line with gap in the middle
-        addIcePosition(8, 6); // Left portion
-        addIcePosition(8, 8); // Right portion
-        // This creates an opening at (8, 7)
+        addIcePosition(8, 6); 
+        addIcePosition(8, 8); 
 
-        addIcePosition(7, 6); // Left vertical line
+        addIcePosition(7, 6); 
     }
 
 
 
 
     private void initializeLevel5Map() {
-        // Hero starts in the northwest corner
-        setHeroStartPosition(1, 1);
 
-        // Outer boundary
+        // Bordas Do mapa
         int maxRow = 29, maxCol = 14;
         for (int c = 0; c <= maxCol; c++) {
             addIcePosition(0, c);
@@ -420,80 +409,73 @@ public class Mapas implements Serializable {
             addIcePosition(r, maxCol);
         }
 
-        // Create a more interesting maze-like structure with quadrants
-        
-        // Top-left quadrant: Zigzag pattern
+        // Estrutura central'
+       
+        // Trap 1
         for (int i = 3; i <= 12; i += 3) {
-            // Horizontal zigzag segments
             for (int j = 1; j < 6; j++) {
                 addIcePosition(i, j);
             }
         }
         
-        // Top-right quadrant: Spiral-like structure (inspired by level 2)
+        // Trap 2
         for (int j = 8; j <= 12; j++) {
-            addIcePosition(3, j); // Top horizontal line
+            addIcePosition(3, j); 
         }
         for (int i = 4; i <= 9; i++) {
-            addIcePosition(i, 12); // Right vertical line
+            addIcePosition(i, 12); 
         }
         for (int j = 11; j >= 8; j--) {
-            addIcePosition(9, j); // Bottom horizontal line
+            addIcePosition(9, j); 
         }
         for (int i = 8; i >= 5; i--) {
-            addIcePosition(i, 8); // Left vertical line
+            addIcePosition(i, 8); 
         }
         for (int j = 9; j <= 10; j++) {
-            addIcePosition(5, j); // Inner horizontal line
+            addIcePosition(5, j); 
         }
         
-        // Bottom-left quadrant: Room with columns
+        // Trap 3
         for (int i = 17; i <= 26; i += 3) {
             for (int j = 2; j <= 5; j += 3) {
-                addIcePosition(i, j);     // Column pattern
-                addIcePosition(i, j + 1); // Make columns thicker
+                addIcePosition(i, j);     
+                addIcePosition(i, j + 1); 
             }
         }
         
-        // Bottom-right quadrant: Maze with dead ends
+        // Trap 4
         for (int i = 17; i <= 24; i += 7) {
             for (int j = 8; j <= 12; j++) {
-                addIcePosition(i, j);     // Horizontal barriers
+                addIcePosition(i, j);     
             }
         }
         for (int i = 18; i <= 26; i++) {
-            addIcePosition(i, 10);        // Vertical barrier
+            addIcePosition(i, 10);        
         }
-        // Add some gaps for navigation
-        addIcePosition(20, 10);           // Remove one ice block for path
-        addIcePosition(17, 10);           // Remove one ice block for path
         
-        // Central chamber with "plus" shape (modified from original)
+        addIcePosition(20, 10);           
+        addIcePosition(17, 10);           
+        
         int centerR = maxRow / 2, centerC = maxCol / 2;
         
-        // Horizontal bar of the plus
         for (int c = centerC - 4; c <= centerC + 4; c++) {
-            if (c != centerC - 2 && c != centerC + 2) { // Create gaps for entry
+            if (c != centerC - 2 && c != centerC + 2) {
                 addIcePosition(centerR, c);
             }
         }
         
-        // Vertical bar of the plus
         for (int r = centerR - 3; r <= centerR + 3; r++) {
-            if (r != centerR - 1 && r != centerR + 1) { // Create gaps for entry
+            if (r != centerR - 1 && r != centerR + 1) {
                 addIcePosition(r, centerC);
             }
         }
         
-        // Add some interior walls in the central chamber
         addIcePosition(centerR - 1, centerC - 1);
         addIcePosition(centerR + 1, centerC + 1);
         addIcePosition(centerR - 1, centerC + 1);
         addIcePosition(centerR + 1, centerC - 1);
         
-        // Add villain positions for Level 5
-        // Choose an appropriate position for the Villain_3
-        addVillainPosition(13, 7); // Example position - adjust as needed
+        addVillainPosition(13, 7); 
     }
     
     public void addIcePosition(int linha, int coluna) {
@@ -502,18 +484,6 @@ public class Mapas implements Serializable {
     
     public void addVillainPosition(int linha, int coluna) {
         villainPositions.add(new Posicao(linha, coluna));
-    }
-    
-    public void addFruitPosition(int linha, int coluna) {
-        fruitPositions.add(new Posicao(linha, coluna));
-    }
-    
-    public void addFogoPosition(int linha, int coluna) {
-        fogoPositions.add(new Posicao(linha, coluna));
-    }
-    
-    public void setHeroStartPosition(int linha, int coluna) {
-        this.heroStartPosition = new Posicao(linha, coluna);
     }
     
     // Getters

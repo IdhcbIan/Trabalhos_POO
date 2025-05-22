@@ -20,16 +20,13 @@ public class Fases {
     }
 
     private void initializeLevel() {
-        // Create hero
+        // Criando Heroi
         hero = new Hero("Char_1.png");
         
-        // Reset fruit counters
         Fruta.resetContadores();
         
-        // Add ice barriers from map
-        addIceBarriers();
+        addIceBarriers(); // Do Mapa!!
 
-        // Configure level based on level number
         switch(level) {
             case 1:
                 configureLevel1();
@@ -52,23 +49,22 @@ public class Fases {
 
         this.elementos.add(hero);
         
-        // Debug output
+        // Debug...
         System.out.println("Level " + level + " initialized with " + 
                           Fruta.getTotalFrutas() + " total fruits.");
     }
     
     // 11111111111111111111111111111111111111111111111111111111111
     private void configureLevel1() {
-        // Set hero position for level 1
         hero.setPosicao(2, 7);
         
-        // Add fruits
+        // Adicionando frutas
         addFruta(4, 8);
         addFruta(11, 4);
         addFruta(18, 8);
         addFruta(25, 4);
 
-        // Add villains - uncomment and modify as needed
+        // Adicionando Viloes
         addVilao(4, 1, 12, 1, true); 
         addVilao(11, 1, 12, 1, true); 
         addVilao(18, 1, 12, 1, true); 
@@ -77,10 +73,9 @@ public class Fases {
 
     // 222222222222222222222222222222222222222222222222222222222
     private void configureLevel2() {
-        // Set hero position for level 2
         hero.setPosicao(1, 1);
         
-        // Add fruits
+        // Adicionando frutas
         addFruta(1, 10);
         addFruta(3, 8);
         addFruta(5, 5, 4);
@@ -92,7 +87,7 @@ public class Fases {
         addFruta(11, 5, 6);
         addFruta(13, 7, 6);
 
-        // Add villains
+        // Adicionando Viloes
         addVilao(3, 3, 8, 1);
         addVilao(9, 5, 4, 2);
     }
@@ -101,7 +96,7 @@ public class Fases {
     private void configureLevel3() {
         hero.setPosicao(2, 7);
         
-        // Add fruits
+        // Adicionando frutas
         addFruta(4, 8);
         addFruta(11, 4);
         addFruta(18, 8);
@@ -118,7 +113,7 @@ public class Fases {
     private void configureLevel4() {
         hero.setPosicao(1, 1);
         
-        // Add fruits similar to level 2
+        // Adicionando frutas
         addFruta(1, 10);
         addFruta(3, 8);
         addFruta(5, 5, 4);
@@ -130,7 +125,7 @@ public class Fases {
         addFruta(11, 5, 6);
         addFruta(13, 7, 6);
 
-        // Add shooting villains (Villan_2) at similar positions to level 2's villains
+        // Adicionando Viloes
         addVilao2(3, 3, 50, true);   // Similar position to first villain in level 2, shoots right
         addVilao2(9, 5, 20, false);  // Similar position to second villain in level 2, shoots left (shooting slower now)
         addVilao2(13, 10, 20, false); // New villain, shoots left
@@ -138,7 +133,6 @@ public class Fases {
 
     // 555555555555555555555555555555555555555555555555555555555
     private void configureLevel5() {
-        // Configurando Heroi
         Posicao heroPos = mapa.getHeroStartPosition();
         hero.setPosicao(heroPos.getLinha(), heroPos.getColuna());
         
@@ -182,7 +176,7 @@ public class Fases {
     }
 
 
-    //-------- Helper Functions ------------------------------------------
+    //-------- Helper ------------------------------------------
     
     private void addVilao3(int linha, int coluna, int moveRate) {
         Villan_3 vilao = new Villan_3("Villan_3.png");
