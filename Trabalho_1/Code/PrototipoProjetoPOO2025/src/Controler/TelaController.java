@@ -43,6 +43,10 @@ public class TelaController implements MouseListener, KeyListener {
         return cj;
     }
     
+    public Fases getFase() {
+        return fase;
+    }
+    
     public Hero getHero() {
         return hero;
     }
@@ -120,6 +124,10 @@ public class TelaController implements MouseListener, KeyListener {
         }
         return false;
     }
+    // Add a variable to track when the next phase was loaded to prevent rapid skipping
+    private long lastPhaseLoadTime = 0;
+    private static final long PHASE_LOAD_COOLDOWN = 1000; // 1 second cooldown
+    
     @Override
     public void keyPressed(KeyEvent e) {
         // Check if the success notification is visible and game is frozen
@@ -128,18 +136,28 @@ public class TelaController implements MouseListener, KeyListener {
         
         // Handle 'n' key press to advance to next phase when success notification is shown
         if (e.getKeyCode() == KeyEvent.VK_N && isSuccessNotificationActive) {
+            // Check if enough time has passed since the last phase load
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastPhaseLoadTime < PHASE_LOAD_COOLDOWN) {
+                System.out.println("Too soon to load next phase, ignoring N key");
+                return; // Ignore the key press if it's too soon
+            }
+            
             System.out.println("N key pressed, advancing to next phase");
-            // Unfreeze the game
-            SuccessoNotification.getInstance().setGameFreeze(false);
-            // Hide the success notification
-            SuccessoNotification.getInstance().showSuccessMessage(""); // This will reset the timer
-            SuccessoNotification.getInstance().update(); // Force update to hide it
+            
+            // Properly hide the success notification
+            SuccessoNotification.getInstance().hide();
+            
+            // Force repaint to remove the black overlay
+            view.repaint();
             
             // Load the next phase if available
             if (fase != null) {
                 int nextLevel = fase.getLevel() + 1;
                 // Check if next level exists (assuming max 5 levels)
                 if (nextLevel <= 5) {
+                    // Update the last phase load time
+                    lastPhaseLoadTime = currentTime;
                     carregarFase(nextLevel);
                 } else {
                     // If we're at the last level, show a game completion message

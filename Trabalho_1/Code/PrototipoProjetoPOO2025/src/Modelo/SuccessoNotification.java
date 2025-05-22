@@ -43,6 +43,16 @@ public class SuccessoNotification {
         }
     }
     
+    /**
+     * Properly hide the notification and reset its state
+     */
+    public void hide() {
+        this.isVisible = false;
+        this.gameFreeze = false;
+        this.message = "";
+        this.displayTime = 0;
+    }
+    
     public void render(Graphics2D g2, int width, int height) {
         if (!isVisible) return;
         int boxWidth = 400;

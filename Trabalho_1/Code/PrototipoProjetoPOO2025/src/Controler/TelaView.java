@@ -123,12 +123,15 @@ public class TelaView extends JFrame {
         // Draw fruit counter in the top-left corner
         drawFruitCounter(g2);
         
+        // Draw the level indicator
+        drawLevelIndicator(g2);
+        
         // Check if game is over to ensure notification is visible
         if (Hero.isGameOver()) {
             System.out.println("TelaView: Game is over, should show notification");
         }
         
-        // Draw the success notification on top of everything
+        // Draw notifications if they're visible
         if (SuccessoNotification.getInstance().isVisible()) {
             System.out.println("TelaView: Rendering success notification");
             SuccessoNotification.getInstance().render(g2, getWidth() - getInsets().right, getHeight() - getInsets().top);
@@ -237,6 +240,41 @@ public class TelaView extends JFrame {
         // Draw counter text
         g2.setColor(Color.YELLOW);
         g2.drawString(counterText, 20, getHeight() - getInsets().bottom - 20);
+        
+        // Restore original font and color
+        g2.setFont(originalFont);
+        g2.setColor(originalColor);
+    }
+    
+    /**
+     * Draws the level indicator in the top left corner of the screen
+     */
+    private void drawLevelIndicator(Graphics2D g2) {
+        if (controller == null || controller.getFase() == null) {
+            return; // No level to display
+        }
+        
+        Font originalFont = g2.getFont();
+        Color originalColor = g2.getColor();
+        
+        // Use the same font as the fruit counter
+        Font levelFont = new Font("Arial", Font.BOLD, 16);
+        g2.setFont(levelFont);
+        
+        // Get the current level and max level (assuming 5 levels total)
+        int currentLevel = controller.getFase().getLevel();
+        int maxLevel = 5;
+        
+        String levelText = "Level: " + currentLevel + "/" + maxLevel;
+        
+        // Draw level indicator background
+        g2.setColor(new Color(0, 0, 0, 160)); // Semi-transparent black
+        g2.fillRoundRect(10, 10, 
+                g2.getFontMetrics().stringWidth(levelText) + 20, 30, 10, 10);
+        
+        // Draw level indicator text
+        g2.setColor(Color.CYAN); // Different color from fruit counter
+        g2.drawString(levelText, 20, 30);
         
         // Restore original font and color
         g2.setFont(originalFont);

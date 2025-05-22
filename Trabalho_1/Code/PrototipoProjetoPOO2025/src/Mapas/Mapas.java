@@ -307,7 +307,7 @@ public class Mapas implements Serializable {
         for (int i = 1; i < 4; i++) {
             addIcePosition(24, i);
         }
-        for (int i = 11; i < 14; i++) {
+        for (int i = 6; i < 14; i++) {
             addIcePosition(24, i);
         }
 

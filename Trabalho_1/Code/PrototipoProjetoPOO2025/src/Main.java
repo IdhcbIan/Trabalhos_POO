@@ -20,7 +20,7 @@ public class Main {
                 view.setCameraManager(cam);
                 
                 // Load the first phase
-                controller.carregarFase(1);
+                controller.carregarFase(3);
                 
                 // Start the game loop
                 view.setVisible(true);
