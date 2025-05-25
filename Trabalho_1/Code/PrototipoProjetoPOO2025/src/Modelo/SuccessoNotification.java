@@ -11,10 +11,10 @@ public class SuccessoNotification {
     private boolean isVisible = false;
     private String message = "";
     private int displayTime = 0;
-    private final int MAX_DISPLAY_TIME = 120; // Frames to display message (2 seconds at 60fps)
-    private boolean gameFreeze = false; // Flag to indicate if the game should be frozen
+    private final int MAX_DISPLAY_TIME = 120; 
+    private boolean gameFreeze = false;
+    private boolean isLevelCompletion = false; // Flag to determine if this is a level completion notification
     
-    // Singleton pattern
     private SuccessoNotification() {}
     
     public static SuccessoNotification getInstance() {
@@ -29,56 +29,15 @@ public class SuccessoNotification {
         this.isVisible = true;
         this.displayTime = 0;
         this.gameFreeze = true; // Freeze the game when success notification appears
-        System.out.println("DEBUG: SuccessoNotification.showSuccessMessage called, message: " + message);
-    }
-    
-    public void update() {
-        if (isVisible) {
-            displayTime++;
-            if (displayTime > MAX_DISPLAY_TIME) {
-                isVisible = false;
-                // Don't automatically unfreeze the game when notification disappears
-                // The game will remain frozen until player presses 'n'
-            }
-        }
-    }
-    
-    /**
-     * Properly hide the notification and reset its state
-     */
-    public void hide() {
-        this.isVisible = false;
-        this.gameFreeze = false;
-        this.message = "";
-        this.displayTime = 0;
-    }
-    
-    public void render(Graphics2D g2, int width, int height) {
-        if (!isVisible) return;
-        int boxWidth = 400;
-        int boxHeight = 100;
-        int x = (width - boxWidth) / 2;
-        int y = (height - boxHeight) / 2;
-
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
-        g2.setColor(Color.BLACK);
-        g2.fillRoundRect(x, y, boxWidth, boxHeight, 20, 20);
-
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-        g2.setColor(Color.GREEN);
-        g2.setFont(new Font("Arial", Font.BOLD, 28));
-        FontMetrics fm = g2.getFontMetrics();
-        String[] lines = message.split("\n");
-        int lineHeight = fm.getHeight();
-        int totalTextHeight = lineHeight * lines.length;
-        int startY = y + (boxHeight - totalTextHeight) / 2 + fm.getAscent();
-
-        for (int i = 0; i < lines.length; i++) {
-            int textWidth = fm.stringWidth(lines[i]);
-            int textX = x + (boxWidth - textWidth) / 2;
-            int textY = startY + i * lineHeight;
-            g2.drawString(lines[i], textX, textY);
-        }
+        
+        // Check if this is a level completion message
+        this.isLevelCompletion = message.contains("Level Complete") || 
+                                message.contains("All fruits collected") ||
+                                message.contains("Congratulations") ||
+                                message.contains("SUCESSO");
+        
+        System.out.println("DEBUG: SuccessoNotification.showSuccessMessage called, message: " + message + 
+                          ", isLevelCompletion: " + isLevelCompletion);
     }
     
     public boolean isVisible() {
@@ -89,7 +48,67 @@ public class SuccessoNotification {
         return gameFreeze;
     }
     
-    public void setGameFreeze(boolean freeze) {
-        this.gameFreeze = freeze;
+    public boolean isLevelCompletion() {
+        return isLevelCompletion;
     }
-} 
+    
+    public void hide() {
+        this.isVisible = false;
+        this.gameFreeze = false;
+        System.out.println("DEBUG: SuccessoNotification.hide called");
+    }
+    
+    public void update() {
+        if (isVisible) {
+            displayTime++;
+            if (displayTime >= MAX_DISPLAY_TIME) {
+                hide();
+            }
+        }
+    }
+    
+    public void draw(Graphics2D g2d, int screenWidth, int screenHeight) {
+        if (!isVisible) {
+            return;
+        }
+        
+        // Draw semi-transparent black overlay
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, screenWidth, screenHeight);
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        
+        // Draw success message
+        g2d.setColor(Color.GREEN);
+        g2d.setFont(new Font("Arial", Font.BOLD, 24));
+        
+        // Split message by newlines
+        String[] lines = message.split("\n");
+        FontMetrics fm = g2d.getFontMetrics();
+        
+        int totalHeight = lines.length * fm.getHeight();
+        int y = (screenHeight - totalHeight) / 2;
+        
+        for (String line : lines) {
+            int textWidth = fm.stringWidth(line);
+            int x = (screenWidth - textWidth) / 2;
+            g2d.drawString(line, x, y + fm.getAscent());
+            y += fm.getHeight();
+        }
+        
+        // Draw instruction based on notification type
+        g2d.setFont(new Font("Arial", Font.PLAIN, 16));
+        String instruction;
+        
+        if (isLevelCompletion) {
+            instruction = "Press 'N' to continue to next level";
+        } else {
+            instruction = "Spacebar to continue playing";
+        }
+        
+        fm = g2d.getFontMetrics();
+        int textWidth = fm.stringWidth(instruction);
+        int x = (screenWidth - textWidth) / 2;
+        g2d.drawString(instruction, x, screenHeight - 50);
+    }
+}

@@ -14,7 +14,9 @@ public class FracassoNotification {
     private int displayTime = 0;
     private final int MAX_DISPLAY_TIME = Integer.MAX_VALUE; 
     
-    private FracassoNotification() {}
+    private FracassoNotification() {
+        System.out.println("FracassoNotification: Instance created");
+    }
     
     public static FracassoNotification getInstance() {
         if (instance == null) {
@@ -27,55 +29,80 @@ public class FracassoNotification {
         this.message = message;
         this.isVisible = true;
         this.displayTime = 0;
-        System.out.println("FracassoNotification: Showing message: " + message); // Debug message
+        System.out.println("FracassoNotification: Showing message: " + message + ", isVisible set to: " + isVisible);
     }
     
     public void update() {
         if (isVisible) {
             displayTime++;
             if (displayTime % 30 == 0) {
-                System.out.println("FracassoNotification: Still visible, displayTime=" + displayTime);
+                System.out.println("FracassoNotification: Still visible, displayTime=" + displayTime + ", message: " + message);
             }
             if (displayTime > MAX_DISPLAY_TIME) {
                 isVisible = false;
+                System.out.println("FracassoNotification: Maximum display time reached, hiding notification");
             }
         }
     }
     
+    /**
+     * Draw the failure notification on the screen
+     * @param g2d The Graphics2D context to draw on
+     * @param screenWidth The width of the screen
+     * @param screenHeight The height of the screen
+     */
+    public void draw(Graphics2D g2d, int screenWidth, int screenHeight) {
+        if (!isVisible) {
+            return;
+        }
+        
+        System.out.println("FracassoNotification: Drawing message: " + message + 
+                          ", Screen dimensions: " + screenWidth + "x" + screenHeight);
+        
+        // Draw semi-transparent black overlay
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, screenWidth, screenHeight);
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        
+        // Draw failure message
+        g2d.setColor(Color.RED);
+        g2d.setFont(new Font("Arial", Font.BOLD, 48));
+        
+        // Split message by newlines
+        String[] lines = message.split("\n");
+        FontMetrics fm = g2d.getFontMetrics();
+        
+        int totalHeight = lines.length * fm.getHeight();
+        int y = (screenHeight - totalHeight) / 2;
+        
+        for (String line : lines) {
+            int textWidth = fm.stringWidth(line);
+            int x = (screenWidth - textWidth) / 2;
+            g2d.drawString(line, x, y + fm.getAscent());
+            y += fm.getHeight();
+        }
+        
+        // Draw instruction
+        g2d.setFont(new Font("Arial", Font.PLAIN, 24));
+        String instruction = "Press 'R' to restart";
+        fm = g2d.getFontMetrics();
+        int textWidth = fm.stringWidth(instruction);
+        int x = (screenWidth - textWidth) / 2;
+        g2d.drawString(instruction, x, screenHeight - 50);
+    }
+    
+    /**
+     * Legacy render method for backward compatibility
+     * @deprecated Use draw(Graphics2D, int, int) instead
+     */
+    @Deprecated
     public void render(Graphics g, int width, int height) {
         if (!isVisible) return;
         
-        System.out.println("FracassoNotification: Rendering message");
-        
-        // Transparencia!!
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-        g2d.setColor(new Color(0, 0, 0, 150));
-        g2d.fillRect(0, 0, width, height);
-        
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-        g2d.setColor(Color.RED); 
-        Font originalFont = g.getFont();
-        Font largeFont = new Font("Arial", Font.BOLD, 48); 
-        g2d.setFont(largeFont);
-        
-        String[] lines = message.split("\n");
-        FontMetrics fm = g2d.getFontMetrics();
-        int lineHeight = fm.getHeight();
-        
-        int totalHeight = lineHeight * lines.length;
-        int startY = (height - totalHeight) / 2 + fm.getAscent();
-        
-        for (int i = 0; i < lines.length; i++) {
-            int textWidth = fm.stringWidth(lines[i]);
-            int x = (width - textWidth) / 2;
-            int y = startY + (i * lineHeight);
-            
-            g2d.drawString(lines[i], x, y);
-        }
-        
-        g2d.setFont(originalFont);
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        System.out.println("FracassoNotification: Legacy render method called, forwarding to draw method");
+        // Call the new draw method with a Graphics2D object
+        draw((Graphics2D) g, width, height);
     }
     
     public boolean isVisible() {
@@ -83,6 +110,7 @@ public class FracassoNotification {
     }
     
     public void hide() {
+        System.out.println("FracassoNotification: Hiding notification, was visible: " + isVisible);
         isVisible = false;
     }
 }

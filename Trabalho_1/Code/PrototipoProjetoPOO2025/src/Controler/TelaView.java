@@ -27,6 +27,12 @@ public class TelaView extends JFrame {
     private CameraManager cameraManager;
     private Graphics2D g2;
     
+    // Variables for displaying save/load status
+    private boolean showSaveLoadMessage = false;
+    private String saveLoadMessage = "";
+    private long messageStartTime = 0;
+    private static final long MESSAGE_DURATION = 3000; // 3 seconds
+    
     public TelaView() {
         Desenho.setCenario(this);
         initComponents();
@@ -66,12 +72,28 @@ public class TelaView extends JFrame {
         return controller.ehPosicaoValida(p);
     }
     
+    /**
+     * Display a save/load status message for a few seconds
+     * @param message The message to display
+     */
+    public void showSaveLoadMessage(String message) {
+        this.saveLoadMessage = message;
+        this.showSaveLoadMessage = true;
+        this.messageStartTime = System.currentTimeMillis();
+    }
+    
     public void go() {
         TimerTask task = new TimerTask() {
             public void run() {
                 // Update the notifications
                 SuccessoNotification.getInstance().update();
                 FracassoNotification.getInstance().update();
+                
+                // Check if we need to hide the save/load message
+                if (showSaveLoadMessage && System.currentTimeMillis() - messageStartTime > MESSAGE_DURATION) {
+                    showSaveLoadMessage = false;
+                }
+                
                 repaint();
             }
         };
@@ -115,39 +137,32 @@ public class TelaView extends JFrame {
             }
         }
         
-        if (controller.getFaseAtual() != null && !controller.getFaseAtual().isEmpty()) {
-            controller.getControleDeJogo().desenhaTudo(controller.getFaseAtual());
+        if (controller != null && controller.getControleDeJogo() != null && controller.getFaseAtual() != null) {
             controller.getControleDeJogo().processaTudo(controller.getFaseAtual());
+            controller.getControleDeJogo().desenhaTudo(controller.getFaseAtual());
         }
         
-        // Draw fruit counter in the top-left corner
+        // Draw the fruit counter
         drawFruitCounter(g2);
         
         // Draw the level indicator
         drawLevelIndicator(g2);
         
-        // Check if game is over to ensure notification is visible
-        if (Hero.isGameOver()) {
-            System.out.println("TelaView: Game is over, should show notification");
+        // Draw save/load message if active
+        if (showSaveLoadMessage) {
+            drawSaveLoadMessage(g2);
         }
         
-        // Draw notifications if they're visible
+        // Draw the success notification if it's visible
         if (SuccessoNotification.getInstance().isVisible()) {
-            System.out.println("TelaView: Rendering success notification");
-            SuccessoNotification.getInstance().render(g2, getWidth() - getInsets().right, getHeight() - getInsets().top);
+            SuccessoNotification.getInstance().draw(g2, getWidth(), getHeight());
         }
         
-        // Draw the failure notification on top of everything
+        // Draw the failure notification if it's visible
         if (FracassoNotification.getInstance().isVisible()) {
-            System.out.println("TelaView: Rendering failure notification");
-            FracassoNotification.getInstance().render(g2, getWidth() - getInsets().right, getHeight() - getInsets().top);
-        } else if (Hero.isGameOver()) {
-            // If game is over but notification is not visible, force show it
-            System.out.println("TelaView: Game over but notification not visible, forcing it");
-            FracassoNotification.getInstance().showFailureMessage("Game Over!\nPress R to restart");
-            FracassoNotification.getInstance().render(g2, getWidth() - getInsets().right, getHeight() - getInsets().top);
+            FracassoNotification.getInstance().draw(g2, getWidth(), getHeight());
         }
-
+        
         g.dispose();
         g2.dispose();
         if (!getBufferStrategy().contentsLost()) {
@@ -158,13 +173,12 @@ public class TelaView extends JFrame {
     public TelaController getController() {
         return controller;
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("POO2023-1 - Skooter");
-        setAlwaysOnTop(true);
+        setTitle("POO2023");
         setAutoRequestFocus(false);
         setResizable(false);
 
@@ -275,6 +289,35 @@ public class TelaView extends JFrame {
         // Draw level indicator text
         g2.setColor(Color.CYAN); // Different color from fruit counter
         g2.drawString(levelText, 20, 30);
+        
+        // Restore original font and color
+        g2.setFont(originalFont);
+        g2.setColor(originalColor);
+    }
+    
+    /**
+     * Draws the save/load status message
+     */
+    private void drawSaveLoadMessage(Graphics2D g2) {
+        Font originalFont = g2.getFont();
+        Color originalColor = g2.getColor();
+        
+        // Use a larger font for the save/load message
+        Font messageFont = new Font("Arial", Font.BOLD, 18);
+        g2.setFont(messageFont);
+        
+        // Calculate the position (center of screen)
+        int textWidth = g2.getFontMetrics().stringWidth(saveLoadMessage);
+        int x = (getWidth() - textWidth) / 2;
+        int y = 60; // Position below the level indicator
+        
+        // Draw message background
+        g2.setColor(new Color(0, 0, 0, 180)); // Semi-transparent black
+        g2.fillRoundRect(x - 10, y - 20, textWidth + 20, 30, 10, 10);
+        
+        // Draw message text
+        g2.setColor(Color.GREEN); // Green for save/load messages
+        g2.drawString(saveLoadMessage, x, y);
         
         // Restore original font and color
         g2.setFont(originalFont);

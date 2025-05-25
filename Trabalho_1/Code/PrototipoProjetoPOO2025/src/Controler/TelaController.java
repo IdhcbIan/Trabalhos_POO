@@ -51,6 +51,14 @@ public class TelaController implements MouseListener, KeyListener {
         return hero;
     }
     
+    public void setHero(Hero hero) {
+        this.hero = hero;
+    }
+    
+    public CameraManager getCameraManager() {
+        return cameraManager;
+    }
+    
     public boolean ehPosicaoValida(Posicao p) {
         return cj.ehPosicaoValida(this.faseAtual, p);
     }
@@ -128,43 +136,90 @@ public class TelaController implements MouseListener, KeyListener {
     private long lastPhaseLoadTime = 0;
     private static final long PHASE_LOAD_COOLDOWN = 1000; // 1 second cooldown
     
+    /**
+     * Saves the current game state to a file.
+     * 
+     * @param fileName Optional custom filename, uses default if null
+     * @return true if save was successful, false otherwise
+     */
+    public boolean saveGame(String fileName) {
+        boolean success = GameSaveManager.saveGame(this, fileName);
+        if (success) {
+            // Show a success message
+            SuccessoNotification.getInstance().showSuccessMessage("Game saved successfully!");
+            if (this.view != null) {
+                this.view.repaint();
+            }
+        }
+        return success;
+    }
+    
+    /**
+     * Loads a game state from a file.
+     * 
+     * @param fileName Optional custom filename, uses default if null
+     * @return true if load was successful, false otherwise
+     */
+    public boolean loadGame(String fileName) {
+        boolean success = GameSaveManager.loadGame(this, fileName);
+        if (success) {
+            // Show a success message
+            SuccessoNotification.getInstance().showSuccessMessage("Game loaded successfully!");
+            if (this.view != null) {
+                this.view.repaint();
+            }
+        }
+        return success;
+    }
+    
+    public TelaView getView() {
+        return view;
+    }
+    
     @Override
     public void keyPressed(KeyEvent e) {
-        // Check if the success notification is visible and game is frozen
-        boolean isSuccessNotificationActive = SuccessoNotification.getInstance().isVisible() && 
-                                            SuccessoNotification.getInstance().isGameFreeze();
+        // Check if success notification is active
+        boolean isSuccessNotificationActive = SuccessoNotification.getInstance().isVisible();
         
-        // Handle 'n' key press to advance to next phase when success notification is shown
+        // Handle spacebar to dismiss save/load notifications
+        if (e.getKeyCode() == KeyEvent.VK_SPACE && isSuccessNotificationActive) {
+            // Only dismiss if it's not a level completion notification
+            if (!SuccessoNotification.getInstance().isLevelCompletion()) {
+                SuccessoNotification.getInstance().hide();
+                return; // Exit the method after handling spacebar
+            }
+        }
+        
+        // Handle 'n' key to load next level when success notification is showing
         if (e.getKeyCode() == KeyEvent.VK_N && isSuccessNotificationActive) {
-            // Check if enough time has passed since the last phase load
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastPhaseLoadTime < PHASE_LOAD_COOLDOWN) {
-                System.out.println("Too soon to load next phase, ignoring N key");
-                return; // Ignore the key press if it's too soon
-            }
-            
-            System.out.println("N key pressed, advancing to next phase");
-            
-            // Properly hide the success notification
-            SuccessoNotification.getInstance().hide();
-            
-            // Force repaint to remove the black overlay
-            view.repaint();
-            
-            // Load the next phase if available
-            if (fase != null) {
-                int nextLevel = fase.getLevel() + 1;
-                // Check if next level exists (assuming max 5 levels)
-                if (nextLevel <= 5) {
-                    // Update the last phase load time
-                    lastPhaseLoadTime = currentTime;
-                    carregarFase(nextLevel);
-                } else {
-                    // If we're at the last level, show a game completion message
-                    SuccessoNotification.getInstance().showSuccessMessage("Congratulations!\nYou completed all levels!");
+            // Only proceed to next level if it's a level completion notification
+            if (SuccessoNotification.getInstance().isLevelCompletion()) {
+                // Get current time to check cooldown
+                long currentTime = System.currentTimeMillis();
+                
+                // Check if cooldown has passed
+                if (currentTime - lastPhaseLoadTime < PHASE_LOAD_COOLDOWN) {
+                    return; // Skip if cooldown hasn't passed
                 }
+                
+                // Hide the success notification
+                SuccessoNotification.getInstance().hide();
+                
+                // Load the next level
+                if (fase != null) {
+                    int nextLevel = fase.getLevel() + 1;
+                    // Check if next level exists (assuming max 5 levels)
+                    if (nextLevel <= 5) {
+                        // Update the last phase load time
+                        lastPhaseLoadTime = currentTime;
+                        carregarFase(nextLevel);
+                    } else {
+                        // If we're at the last level, show a game completion message
+                        SuccessoNotification.getInstance().showSuccessMessage("Congratulations!\nYou completed all levels!");
+                    }
+                }
+                return; // Exit the method after handling 'n' key
             }
-            return; // Exit the method after handling 'n' key
         }
         
         // If game is frozen due to success notification, don't process other inputs
@@ -198,6 +253,12 @@ public class TelaController implements MouseListener, KeyListener {
                     carregarFase(fase.getLevel());
                 }
             }
+        } else if (e.getKeyCode() == KeyEvent.VK_F5) {
+            // Save game with F5 key
+            saveGame(null); // Use default filename
+        } else if (e.getKeyCode() == KeyEvent.VK_F9) {
+            // Load game with F9 key
+            loadGame(null); // Use default filename
         } else if (hero != null && !Hero.isGameOver()) {  // Only process movement if hero exists and game is not over
             // Process movement keys
             if (e.getKeyCode() == KeyEvent.VK_UP) {

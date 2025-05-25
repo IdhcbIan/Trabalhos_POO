@@ -76,10 +76,16 @@ public class FrutaVert extends Personagem implements Serializable, Coletavel {
         }
     }
 
-
     // Add this method to allow FrutaVert to increment collected count
     public static void incrementarFrutasVertColetadas() {
         frutasVertColetadas++;
+    }
+    
+    // Add method to set counters directly (for loading saved games)
+    public static void setContadores(int total, int coletadas) {
+        System.out.println("DEBUG: Setting vertical fruit counters to total=" + total + ", coletadas=" + coletadas);
+        totalFrutasVert = total;
+        frutasVertColetadas = coletadas;
     }
 
     public boolean isColetada() {

@@ -93,6 +93,13 @@ public class Fruta extends Personagem implements Serializable, Coletavel {
         totalFrutas = 0;
         frutasColetadas = 0;
     }
+    
+    // Add method to set counters directly (for loading saved games)
+    public static void setContadores(int total, int coletadas) {
+        System.out.println("DEBUG: Setting fruit counters to total=" + total + ", coletadas=" + coletadas);
+        totalFrutas = total;
+        frutasColetadas = coletadas;
+    }
 
     public boolean isColetada() {
         return coletada;

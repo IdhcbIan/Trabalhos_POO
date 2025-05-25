@@ -96,4 +96,9 @@ public class Hero extends Personagem implements Serializable{
     public static void resetGameOver() {
         isGameOver = false;
     }
+    
+    // Add static method to set game over state (used when loading a saved game)
+    public static void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
+    }
 }
