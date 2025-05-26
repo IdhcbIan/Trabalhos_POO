@@ -5,6 +5,7 @@ import Modelo.Hero;
 import Modelo.Personagem;
 import Modelo.Villan_1;
 import Modelo.Villan_2;
+import Modelo.Villan_3;
 import Modelo.Fogo;
 import Modelo.Fireball;
 import Modelo.SuccessoNotification;
@@ -92,6 +93,28 @@ public class ControleDeJogo {
                     if (hero.getPosicao().igual(p.getPosicao())) {
                         Villan_1 villan = (Villan_1) p;
                         villan.matarHero(hero);
+                    }
+                }
+                else if (p instanceof Villan_2) {
+                    if (hero.getPosicao().igual(p.getPosicao())) {
+                        Villan_2 villan = (Villan_2) p;
+                        // Only kill the hero if not invulnerable
+                        if (!playerInvulnerable) {
+                            villan.matarHero(hero);
+                        } else {
+                            System.out.println("Hero is invulnerable due to success notification, cannot be killed by villain 2!");
+                        }
+                    }
+                }
+                else if (p instanceof Villan_3) {
+                    if (hero.getPosicao().igual(p.getPosicao())) {
+                        Villan_3 villan = (Villan_3) p;
+                        // Only kill the hero if not invulnerable
+                        if (!playerInvulnerable) {
+                            villan.matarHero(hero);
+                        } else {
+                            System.out.println("Hero is invulnerable due to success notification, cannot be killed by villain 3!");
+                        }
                     }
                 }
                 // Check for hero standing on fire
