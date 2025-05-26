@@ -5,6 +5,7 @@ import Modelo.Villan_2;
 import Modelo.Villan_3;
 import Modelo.Hero;
 import Modelo.Personagem;
+import Modelo.Fireball;
 import Auxiliar.Consts;
 import auxiliar.Posicao;
 
@@ -69,6 +70,39 @@ public class VillainLoader {
                 if (villain != null) {
                     loadedVillains.add(villain);
                     controller.addPersonagem(villain);
+                    
+                    // Special handling for Villain_2 to ensure it's properly connected to the hero
+                    if (villain instanceof Modelo.Villan_2) {
+                        Modelo.Villan_2 v2 = (Modelo.Villan_2) villain;
+                        v2.setTarget(hero);
+                        
+                        // Force an initial processing to ensure it's properly initialized
+                        if (!Hero.isGameOver() && !Modelo.SuccessoNotification.getInstance().isGameFreeze()) {
+                            v2.processLogic();
+                        }
+                        
+                        // Add any pending fireballs
+                        ArrayList<Fireball> fireballs = Villan_2.getPendingFireballs();
+                        for (Fireball fireball : fireballs) {
+                            controller.addPersonagem(fireball);
+                        }
+                    }
+                    
+                    // Special handling for Villain_3 if it exists
+                    try {
+                        Class<?> villan3Class = Class.forName("Modelo.Villan_3");
+                        if (villan3Class.isInstance(villain)) {
+                            // Use reflection to call setTarget if it exists
+                            try {
+                                java.lang.reflect.Method setTarget = villan3Class.getMethod("setTarget", Hero.class);
+                                setTarget.invoke(villain, hero);
+                            } catch (Exception e) {
+                                System.out.println("Error setting target for Villan_3: " + e.getMessage());
+                            }
+                        }
+                    } catch (ClassNotFoundException e) {
+                        // Villan_3 class doesn't exist, that's fine
+                    }
                 }
             }
         }
@@ -136,6 +170,9 @@ public class VillainLoader {
         }
     }
     
+    /**
+     * Create a villain based on the configuration
+     */
     protected Personagem createVillainFromConfig(String villainName, Properties config) {
         try {
             String className = config.getProperty("class");
@@ -218,156 +255,130 @@ public class VillainLoader {
                 coluna = 1;
             }
             
-            // Dynamically load the villain class
-            try {
-                Class<?> villainClass = Class.forName(className);
+            // Create the villain based on its type
+            Personagem villain = null;
+            
+            if (className.equals("Modelo.Villan_1")) {
+                int walkBlocks = 12;
+                int moveRate = 1;
                 
-                // Check if it's a Personagem subclass
-                if (!Personagem.class.isAssignableFrom(villainClass)) {
-                    System.out.println("Class " + className + " is not a subclass of Personagem");
+                try {
+                    String walkBlocksStr = config.getProperty("walkBlocks", "12").trim();
+                    if (walkBlocksStr.contains("#")) {
+                        walkBlocksStr = walkBlocksStr.substring(0, walkBlocksStr.indexOf("#")).trim();
+                    }
+                    walkBlocks = Integer.parseInt(walkBlocksStr);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid walkBlocks value for " + villainName + ": " + e.getMessage());
+                }
+                
+                try {
+                    String moveRateStr = config.getProperty("moveRate", "1").trim();
+                    if (moveRateStr.contains("#")) {
+                        moveRateStr = moveRateStr.substring(0, moveRateStr.indexOf("#")).trim();
+                    }
+                    moveRate = Integer.parseInt(moveRateStr);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid moveRate value for " + villainName + ": " + e.getMessage());
+                }
+                
+                // Create the villain directly
+                Villan_1 v1 = new Villan_1(imageName, walkBlocks, moveRate);
+                v1.setPosicao(linha, coluna);
+                villain = v1;
+                
+            } else if (className.equals("Modelo.Villan_2")) {
+                // For Villan_2, we need to follow the exact same pattern as in Fases.java
+                Villan_2 v2 = new Villan_2(imageName);
+                v2.setPosicao(linha, coluna);
+                
+                // Set additional properties
+                int shootRate = 20;
+                boolean shootRight = true;
+                
+                try {
+                    String shootRateStr = config.getProperty("shootRate", "20").trim();
+                    if (shootRateStr.contains("#")) {
+                        shootRateStr = shootRateStr.substring(0, shootRateStr.indexOf("#")).trim();
+                    }
+                    shootRate = Integer.parseInt(shootRateStr);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid shootRate value for " + villainName + ": " + e.getMessage());
+                }
+                
+                try {
+                    String shootRightStr = config.getProperty("shootRight", "true").trim();
+                    if (shootRightStr.contains("#")) {
+                        shootRightStr = shootRightStr.substring(0, shootRightStr.indexOf("#")).trim();
+                    }
+                    shootRight = Boolean.parseBoolean(shootRightStr);
+                } catch (Exception e) {
+                    System.out.println("Invalid shootRight value for " + villainName + ": " + e.getMessage());
+                }
+                
+                // Set the properties exactly as done in Fases.java
+                v2.setTarget(hero);
+                v2.setShootRate(shootRate);
+                v2.setShootDirection(shootRight);
+                
+                villain = v2;
+                
+            } else if (className.equals("Modelo.Villan_3")) {
+                try {
+                    // Check if Villan_3 class exists
+                    Class.forName("Modelo.Villan_3");
+                    
+                    // Create Villan_3 instance using reflection
+                    Class<?> villan3Class = Class.forName(className);
+                    java.lang.reflect.Constructor<?> constructor = villan3Class.getConstructor(String.class);
+                    villain = (Personagem) constructor.newInstance(imageName);
+                    
+                    // Set position
+                    villain.setPosicao(linha, coluna);
+                    
+                    // Set additional properties using reflection
+                    int moveRate = 1;
+                    try {
+                        String moveRateStr = config.getProperty("moveRate", "1").trim();
+                        if (moveRateStr.contains("#")) {
+                            moveRateStr = moveRateStr.substring(0, moveRateStr.indexOf("#")).trim();
+                        }
+                        moveRate = Integer.parseInt(moveRateStr);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid moveRate value for " + villainName + ": " + e.getMessage());
+                    }
+                    
+                    // Set target and moveRate using reflection
+                    try {
+                        java.lang.reflect.Method setTarget = villan3Class.getMethod("setTarget", Hero.class);
+                        setTarget.invoke(villain, hero);
+                        
+                        java.lang.reflect.Method setMoveRate = villan3Class.getMethod("setMoveRate", int.class);
+                        setMoveRate.invoke(villain, moveRate);
+                    } catch (Exception e) {
+                        System.out.println("Error setting properties for Villan_3: " + e.getMessage());
+                    }
+                } catch (ClassNotFoundException e) {
+                    System.out.println("Villan_3 class not found. Skipping this villain.");
+                    return null;
+                } catch (Exception e) {
+                    System.out.println("Error creating Villan_3: " + e.getMessage());
                     return null;
                 }
-                
-                // Create the villain instance
-                Personagem villain = null;
-                
-                // Try to find a constructor that takes just the image name
+            } else {
+                // For other villain types, try to create with default constructor
                 try {
+                    Class<?> villainClass = Class.forName(className);
                     java.lang.reflect.Constructor<?> constructor = villainClass.getConstructor(String.class);
                     villain = (Personagem) constructor.newInstance(imageName);
-                } catch (NoSuchMethodException e) {
-                    // Try other constructors based on the available properties
-                    if (className.equals("Modelo.Villan_1")) {
-                        // Try Villan_1 specific constructors
-                        int walkBlocks = 12;
-                        int moveRate = 1;
-                        
-                        try {
-                            String walkBlocksStr = config.getProperty("walkBlocks", "12").trim();
-                            if (walkBlocksStr.contains("#")) {
-                                walkBlocksStr = walkBlocksStr.substring(0, walkBlocksStr.indexOf("#")).trim();
-                            }
-                            walkBlocks = Integer.parseInt(walkBlocksStr);
-                        } catch (NumberFormatException ex) {
-                            System.out.println("Invalid walkBlocks value for " + villainName + ": " + ex.getMessage());
-                        }
-                        
-                        try {
-                            String moveRateStr = config.getProperty("moveRate", "1").trim();
-                            if (moveRateStr.contains("#")) {
-                                moveRateStr = moveRateStr.substring(0, moveRateStr.indexOf("#")).trim();
-                            }
-                            moveRate = Integer.parseInt(moveRateStr);
-                        } catch (NumberFormatException ex) {
-                            System.out.println("Invalid moveRate value for " + villainName + ": " + ex.getMessage());
-                        }
-                        
-                        try {
-                            java.lang.reflect.Constructor<?> constructor = villainClass.getConstructor(String.class, int.class, int.class);
-                            villain = (Personagem) constructor.newInstance(imageName, walkBlocks, moveRate);
-                        } catch (NoSuchMethodException ex) {
-                            // Try with just walkBlocks
-                            try {
-                                java.lang.reflect.Constructor<?> constructor = villainClass.getConstructor(String.class, int.class);
-                                villain = (Personagem) constructor.newInstance(imageName, walkBlocks);
-                            } catch (NoSuchMethodException ex2) {
-                                System.out.println("No suitable constructor found for " + className);
-                                return null;
-                            }
-                        }
-                    } else if (className.equals("Modelo.Villan_2")) {
-                        // Create Villan_2 instance
-                        villain = (Personagem) villainClass.getConstructor(String.class).newInstance(imageName);
-                        
-                        // Set additional properties
-                        int shootRate = 20;
-                        boolean shootRight = true;
-                        
-                        try {
-                            String shootRateStr = config.getProperty("shootRate", "20").trim();
-                            if (shootRateStr.contains("#")) {
-                                shootRateStr = shootRateStr.substring(0, shootRateStr.indexOf("#")).trim();
-                            }
-                            shootRate = Integer.parseInt(shootRateStr);
-                        } catch (NumberFormatException ex) {
-                            System.out.println("Invalid shootRate value for " + villainName + ": " + ex.getMessage());
-                        }
-                        
-                        try {
-                            String shootRightStr = config.getProperty("shootRight", "true").trim();
-                            if (shootRightStr.contains("#")) {
-                                shootRightStr = shootRightStr.substring(0, shootRightStr.indexOf("#")).trim();
-                            }
-                            shootRight = Boolean.parseBoolean(shootRightStr);
-                        } catch (Exception ex) {
-                            System.out.println("Invalid shootRight value for " + villainName + ": " + ex.getMessage());
-                        }
-                        
-                        // Call setter methods using reflection
-                        try {
-                            java.lang.reflect.Method setTarget = villainClass.getMethod("setTarget", Hero.class);
-                            setTarget.invoke(villain, hero);
-                            
-                            java.lang.reflect.Method setShootRate = villainClass.getMethod("setShootRate", int.class);
-                            setShootRate.invoke(villain, shootRate);
-                            
-                            java.lang.reflect.Method setShootDirection = villainClass.getMethod("setShootDirection", boolean.class);
-                            setShootDirection.invoke(villain, shootRight);
-                        } catch (Exception ex) {
-                            System.out.println("Error setting properties for " + className + ": " + ex.getMessage());
-                        }
-                    } else {
-                        // For other villain types, try to create with default constructor
-                        try {
-                            villain = (Personagem) villainClass.getConstructor(String.class).newInstance(imageName);
-                            
-                            // Try to set target if method exists
-                            try {
-                                java.lang.reflect.Method setTarget = villainClass.getMethod("setTarget", Hero.class);
-                                setTarget.invoke(villain, hero);
-                            } catch (NoSuchMethodException ex) {
-                                // Method doesn't exist, that's fine
-                            }
-                            
-                            // Try to set moveRate if method exists
-                            try {
-                                int moveRate = 1;
-                                try {
-                                    String moveRateStr = config.getProperty("moveRate", "1").trim();
-                                    if (moveRateStr.contains("#")) {
-                                        moveRateStr = moveRateStr.substring(0, moveRateStr.indexOf("#")).trim();
-                                    }
-                                    moveRate = Integer.parseInt(moveRateStr);
-                                } catch (NumberFormatException ex) {
-                                    System.out.println("Invalid moveRate value for " + villainName + ": " + ex.getMessage());
-                                }
-                                
-                                java.lang.reflect.Method setMoveRate = villainClass.getMethod("setMoveRate", int.class);
-                                setMoveRate.invoke(villain, moveRate);
-                            } catch (NoSuchMethodException ex) {
-                                // Method doesn't exist, that's fine
-                            }
-                        } catch (NoSuchMethodException ex) {
-                            System.out.println("No suitable constructor found for " + className);
-                            return null;
-                        }
-                    }
-                }
-                
-                // Set position
-                if (villain != null) {
                     villain.setPosicao(linha, coluna);
+                } catch (Exception e) {
+                    System.out.println("Error creating villain of class " + className + ": " + e.getMessage());
+                    return null;
                 }
-                
-                return villain;
-            } catch (ClassNotFoundException e) {
-                System.out.println("Villain class not found: " + className);
-                return null;
-            } catch (Exception e) {
-                System.out.println("Error creating villain instance: " + e.getMessage());
-                e.printStackTrace();
-                return null;
             }
+            
+            return villain;
         } catch (Exception e) {
             System.out.println("Error creating villain " + villainName + ": " + e.getMessage());
             e.printStackTrace();
