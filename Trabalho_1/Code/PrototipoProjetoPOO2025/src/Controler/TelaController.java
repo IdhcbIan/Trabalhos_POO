@@ -137,6 +137,52 @@ public class TelaController implements MouseListener, KeyListener {
     private static final long PHASE_LOAD_COOLDOWN = 1000; // 1 second cooldown
     
     /**
+     * Opens a file chooser dialog to select and load villains from a zip file
+     */
+    public void loadVillainsFromZip() {
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setDialogTitle("Select Villain Zip File");
+        
+        // Set file filter to only show zip files
+        javax.swing.filechooser.FileNameExtensionFilter filter = 
+            new javax.swing.filechooser.FileNameExtensionFilter("ZIP Files", "zip");
+        fileChooser.setFileFilter(filter);
+        
+        int result = fileChooser.showOpenDialog(view);
+        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File selectedFile = fileChooser.getSelectedFile();
+            try {
+                VillainLoader loader = new VillainLoader(this);
+                ArrayList<Personagem> loadedVillains = loader.loadVillainsFromZip(selectedFile.getAbsolutePath());
+                
+                if (!loadedVillains.isEmpty()) {
+                    javax.swing.JOptionPane.showMessageDialog(
+                        view, 
+                        "Successfully loaded " + loadedVillains.size() + " villains!", 
+                        "Villains Loaded", 
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE
+                    );
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(
+                        view, 
+                        "No villains were found in the zip file.", 
+                        "No Villains Found", 
+                        javax.swing.JOptionPane.WARNING_MESSAGE
+                    );
+                }
+            } catch (Exception e) {
+                javax.swing.JOptionPane.showMessageDialog(
+                    view, 
+                    "Error loading villains: " + e.getMessage(), 
+                    "Error", 
+                    javax.swing.JOptionPane.ERROR_MESSAGE
+                );
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    /**
      * Saves the current game state to a file.
      * 
      * @param fileName Optional custom filename, uses default if null
@@ -259,6 +305,9 @@ public class TelaController implements MouseListener, KeyListener {
         } else if (e.getKeyCode() == KeyEvent.VK_F9) {
             // Load game with F9 key
             loadGame(null); // Use default filename
+        } else if (e.getKeyCode() == KeyEvent.VK_V) {
+            // Load villains from zip file with V key
+            loadVillainsFromZip();
         } else if (hero != null && !Hero.isGameOver()) {  // Only process movement if hero exists and game is not over
             // Process movement keys
             if (e.getKeyCode() == KeyEvent.VK_UP) {

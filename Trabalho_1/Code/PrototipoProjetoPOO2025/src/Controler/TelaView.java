@@ -14,6 +14,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDropEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
@@ -33,6 +41,9 @@ public class TelaView extends JFrame {
     private long messageStartTime = 0;
     private static final long MESSAGE_DURATION = 3000; // 3 seconds
     
+    // Variables for drag and drop visual feedback
+    private boolean dragOver = false;
+    
     public TelaView() {
         Desenho.setCenario(this);
         initComponents();
@@ -43,6 +54,105 @@ public class TelaView extends JFrame {
         
         this.setVisible(true);
         this.createBufferStrategy(2);
+        
+        // Setup drag and drop functionality
+        setupDragAndDrop();
+    }
+    
+    /**
+     * Set up drag and drop functionality for the game window
+     */
+    private void setupDragAndDrop() {
+        // Create a drop target for the frame
+        new DropTarget(this, new DropTargetAdapter() {
+            @Override
+            public void dragEnter(java.awt.dnd.DropTargetDragEvent dtde) {
+                // Only accept if it's a file
+                if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    dtde.acceptDrag(DnDConstants.ACTION_COPY);
+                    dragOver = true;
+                    repaint();
+                } else {
+                    dtde.rejectDrag();
+                }
+            }
+            
+            @Override
+            public void dragExit(java.awt.dnd.DropTargetEvent dte) {
+                dragOver = false;
+                repaint();
+            }
+            
+            @Override
+            public void drop(DropTargetDropEvent dtde) {
+                try {
+                    // Accept the drop
+                    dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                    dragOver = false;
+                    
+                    // Get the dropped files
+                    Transferable transferable = dtde.getTransferable();
+                    List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                    
+                    // Process each dropped file
+                    for (File file : files) {
+                        if (file.getName().toLowerCase().endsWith(".zip")) {
+                            // Get the mouse position relative to the game grid
+                            int mouseX = dtde.getLocation().x;
+                            int mouseY = dtde.getLocation().y;
+                            
+                            // Convert to grid coordinates
+                            int gridCol = mouseX / Consts.CELL_SIDE;
+                            int gridRow = mouseY / Consts.CELL_SIDE;
+                            
+                            // Adjust for camera offset
+                            gridRow += cameraManager.getCameraLinha();
+                            gridCol += cameraManager.getCameraColuna();
+                            
+                            // Load villains from the zip file at the drop position
+                            loadVillainsAtPosition(file.getAbsolutePath(), gridRow, gridCol);
+                        }
+                    }
+                    
+                    dtde.dropComplete(true);
+                    repaint();
+                } catch (UnsupportedFlavorException | IOException e) {
+                    dtde.dropComplete(false);
+                    System.out.println("Drop failed: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    
+    /**
+     * Load villains from a zip file and place them at the specified position
+     */
+    private void loadVillainsAtPosition(String zipFilePath, int row, int col) {
+        try {
+            // Create a custom villain loader that places villains at the drop position
+            VillainLoader loader = new VillainLoader(controller) {
+                @Override
+                protected Personagem createVillainFromConfig(String villainName, java.util.Properties config) {
+                    // Override the position with the drop position
+                    config.setProperty("linha", String.valueOf(row));
+                    config.setProperty("coluna", String.valueOf(col));
+                    return super.createVillainFromConfig(villainName, config);
+                }
+            };
+            
+            // Load the villains
+            List<Personagem> loadedVillains = loader.loadVillainsFromZip(zipFilePath);
+            
+            if (!loadedVillains.isEmpty()) {
+                showSaveLoadMessage("Added " + loadedVillains.size() + " villains!");
+            } else {
+                showSaveLoadMessage("No villains found in zip file");
+            }
+        } catch (Exception e) {
+            showSaveLoadMessage("Error loading villains: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     public void setController(TelaController controller) {
@@ -163,11 +273,18 @@ public class TelaView extends JFrame {
             FracassoNotification.getInstance().draw(g2, getWidth(), getHeight());
         }
         
+        // Draw drag-over visual feedback
+        if (dragOver) {
+            drawDragOverFeedback(g2);
+        }
+        
         g.dispose();
         g2.dispose();
         if (!getBufferStrategy().contentsLost()) {
             getBufferStrategy().show();
         }
+        
+        Toolkit.getDefaultToolkit().sync();
     }
     
     public TelaController getController() {
@@ -318,6 +435,40 @@ public class TelaView extends JFrame {
         // Draw message text
         g2.setColor(Color.GREEN); // Green for save/load messages
         g2.drawString(saveLoadMessage, x, y);
+        
+        // Restore original font and color
+        g2.setFont(originalFont);
+        g2.setColor(originalColor);
+    }
+    
+    /**
+     * Draws visual feedback when dragging a file over the game window
+     */
+    private void drawDragOverFeedback(Graphics2D g2) {
+        Font originalFont = g2.getFont();
+        Color originalColor = g2.getColor();
+        
+        // Draw a semi-transparent overlay
+        g2.setColor(new Color(0, 100, 255, 50));
+        g2.fillRect(0, 0, getWidth(), getHeight());
+        
+        // Draw a message
+        String message = "Drop ZIP file to add villains";
+        Font messageFont = new Font("Arial", Font.BOLD, 24);
+        g2.setFont(messageFont);
+        
+        // Calculate the position (center of screen)
+        int textWidth = g2.getFontMetrics().stringWidth(message);
+        int x = (getWidth() - textWidth) / 2;
+        int y = getHeight() / 2;
+        
+        // Draw message background
+        g2.setColor(new Color(0, 0, 0, 180));
+        g2.fillRoundRect(x - 10, y - 30, textWidth + 20, 40, 15, 15);
+        
+        // Draw message text
+        g2.setColor(Color.WHITE);
+        g2.drawString(message, x, y);
         
         // Restore original font and color
         g2.setFont(originalFont);
