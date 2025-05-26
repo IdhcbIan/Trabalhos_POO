@@ -1,6 +1,7 @@
 package Controler;
 
 import Modelo.Fruta;
+import Modelo.FrutaVert;
 import Modelo.Hero;
 import Modelo.Personagem;
 import Modelo.Villan_1;
@@ -78,12 +79,22 @@ public class ControleDeJogo {
                     continue;
                 }
                 
-                // Check for collisions with fruits
+                // Check for collisions with fruits - improved detection for fast movement
                 if (p instanceof Fruta) {
                     // Check if hero is at the same position as the fruit
                     if (hero.getPosicao().igual(p.getPosicao())) {
                         Fruta fruta = (Fruta) p;
                         fruta.coletar();
+                        umaFase.remove(p);
+                        i--; // Adjust index after removal
+                    }
+                }
+                // Check for collisions with vertical fruits - improved detection
+                else if (p instanceof FrutaVert) {
+                    // Check if hero is at the same position as the fruit
+                    if (hero.getPosicao().igual(p.getPosicao())) {
+                        FrutaVert frutaVert = (FrutaVert) p;
+                        frutaVert.coletar();
                         umaFase.remove(p);
                         i--; // Adjust index after removal
                     }
