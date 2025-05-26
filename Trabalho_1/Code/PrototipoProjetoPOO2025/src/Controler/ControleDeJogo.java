@@ -7,6 +7,7 @@ import Modelo.Villan_1;
 import Modelo.Villan_2;
 import Modelo.Fogo;
 import Modelo.Fireball;
+import Modelo.SuccessoNotification;
 import auxiliar.Posicao;
 import java.util.ArrayList;
 
@@ -29,12 +30,15 @@ public class ControleDeJogo {
         }
         
         if (hero != null) {
+            // Check if player is invulnerable due to success notification
+            boolean playerInvulnerable = SuccessoNotification.getInstance().isPlayerInvulnerable();
+            
             // Process ALL villains to generate fireballs, regardless of visibility
             for (Personagem p : umaFase) {
                 if (p instanceof Villan_2) {
                     Villan_2 vilao = (Villan_2) p;
                     // Manually process the villain's logic to ensure fireballs are created
-                    if (!Hero.isGameOver()) {
+                    if (!Hero.isGameOver() && !SuccessoNotification.getInstance().isGameFreeze()) {
                         vilao.processLogic();
                     }
                 }
@@ -62,7 +66,12 @@ public class ControleDeJogo {
                 
                 // Check for hero collision with fireball
                 if (p instanceof Fireball && hero.getPosicao().igual(p.getPosicao())) {
-                    hero.morrer();
+                    // Only kill the hero if not invulnerable
+                    if (!playerInvulnerable) {
+                        hero.morrer();
+                    } else {
+                        System.out.println("Hero is invulnerable due to success notification, cannot be killed by fireball!");
+                    }
                     umaFase.remove(p);
                     i--;
                     continue;
@@ -88,8 +97,11 @@ public class ControleDeJogo {
                 // Check for hero standing on fire
                 else if (p instanceof Fogo) {
                     Fogo fogo = (Fogo) p;
-                    if (fogo.checkHeroOnFire(hero)) {
+                    // Only check for fire if hero is not invulnerable
+                    if (!playerInvulnerable && fogo.checkHeroOnFire(hero)) {
                         hero.morrer(); // Kill the hero if standing on fire
+                    } else if (playerInvulnerable && fogo.checkHeroOnFire(hero)) {
+                        System.out.println("Hero is invulnerable due to success notification, cannot be killed by fire!");
                     }
                 }
                 else if (p != hero && hero.getPosicao().igual(p.getPosicao())) {

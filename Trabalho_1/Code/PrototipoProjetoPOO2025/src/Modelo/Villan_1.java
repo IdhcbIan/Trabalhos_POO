@@ -148,6 +148,12 @@ public class Villan_1 extends Personagem implements Serializable {
     }
 
     public void matarHero(Hero hero) {
+        // Don't kill the hero if player is invulnerable due to success notification
+        if (SuccessoNotification.getInstance().isPlayerInvulnerable()) {
+            System.out.println("Hero is invulnerable due to success notification, cannot be killed!");
+            return;
+        }
+        
         System.out.println("Hero killed by villain!"); // Debug message
         hero.morrer();
     }

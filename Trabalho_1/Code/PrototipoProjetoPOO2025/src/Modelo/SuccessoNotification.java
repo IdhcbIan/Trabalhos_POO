@@ -14,6 +14,7 @@ public class SuccessoNotification {
     private final int MAX_DISPLAY_TIME = 120; 
     private boolean gameFreeze = false;
     private boolean isLevelCompletion = false; // Flag to determine if this is a level completion notification
+    private boolean playerInvulnerable = false; // New flag to make player invulnerable
     
     private SuccessoNotification() {}
     
@@ -29,6 +30,7 @@ public class SuccessoNotification {
         this.isVisible = true;
         this.displayTime = 0;
         this.gameFreeze = true; // Freeze the game when success notification appears
+        this.playerInvulnerable = true; // Make player invulnerable when success notification appears
         
         // Check if this is a level completion message
         this.isLevelCompletion = message.contains("Level Complete") || 
@@ -37,7 +39,8 @@ public class SuccessoNotification {
                                 message.contains("SUCESSO");
         
         System.out.println("DEBUG: SuccessoNotification.showSuccessMessage called, message: " + message + 
-                          ", isLevelCompletion: " + isLevelCompletion);
+                          ", isLevelCompletion: " + isLevelCompletion + 
+                          ", playerInvulnerable: " + playerInvulnerable);
     }
     
     public boolean isVisible() {
@@ -52,9 +55,14 @@ public class SuccessoNotification {
         return isLevelCompletion;
     }
     
+    public boolean isPlayerInvulnerable() {
+        return playerInvulnerable;
+    }
+    
     public void hide() {
         this.isVisible = false;
         this.gameFreeze = false;
+        this.playerInvulnerable = false; // Reset invulnerability when hiding notification
         System.out.println("DEBUG: SuccessoNotification.hide called");
     }
     
