@@ -126,9 +126,9 @@ public class Fases {
         addFruta(13, 7, 6);
 
         // Adicionando Viloes
-        addVilao2(3, 3, 50, true);   // Similar position to first villain in level 2, shoots right
-        addVilao2(9, 5, 20, false);  // Similar position to second villain in level 2, shoots left (shooting slower now)
-        addVilao2(13, 10, 20, false); // New villain, shoots left
+        addVilao2(3, 3, 50, true);   
+        addVilao2(9, 5, 20, false); 
+        addVilao2(13, 10, 20, false);
     }
 
     // 555555555555555555555555555555555555555555555555555555555
@@ -201,40 +201,33 @@ public class Fases {
     }
 
     private void addVilao(int linha, int coluna, boolean isZigueZague) {
-        // Use default constructor (12 blocks) if method is called with old signature
         Villan_1 vilao = new Villan_1("Villan_2.png");
         vilao.setPosicao(linha, coluna);
         this.elementos.add(vilao);
     }
 
-    // Keep the existing method that accepts just walkBlocks
     private void addVilao(int linha, int coluna, int walkBlocks) {
         Villan_1 vilao = new Villan_1("Villan_2.png", walkBlocks);
         vilao.setPosicao(linha, coluna);
         this.elementos.add(vilao);
     }
 
-    // Method with boolean as the fourth parameter (existing method)
     private void addVilao(int linha, int coluna, int walkBlocks, boolean isZigueZague) {
         Villan_1 vilao = new Villan_1("Villan_2.png", walkBlocks);
         vilao.setPosicao(linha, coluna);
         this.elementos.add(vilao);
-        // isZigueZague parameter is reserved for future use
     }
 
-    // ADD THIS NEW METHOD: Method with moveRate as the fourth parameter
     private void addVilao(int linha, int coluna, int walkBlocks, int moveRate) {
         Villan_1 vilao = new Villan_1("Villan_2.png", walkBlocks, moveRate);
         vilao.setPosicao(linha, coluna);
         this.elementos.add(vilao);
     }
 
-    // Method with all parameters
     private void addVilao(int linha, int coluna, int walkBlocks, int moveRate, boolean isZigueZague) {
         Villan_1 vilao = new Villan_1("Villan_2.png", walkBlocks, moveRate);
         vilao.setPosicao(linha, coluna);
         this.elementos.add(vilao);
-        // isZigueZague parameter is reserved for future use
     }
 
     private void addIceBarriers() {

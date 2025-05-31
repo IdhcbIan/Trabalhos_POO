@@ -27,7 +27,7 @@ public class CameraManager {
         int linha = hero.getPosicao().getLinha();
         int coluna = hero.getPosicao().getColuna();
 
-        // Center camera on hero
+        // Centralizar camera
         cameraLinha = Math.max(0, Math.min(linha - Consts.RES / 2, Consts.MUNDO_ALTURA - Consts.RES));
         cameraColuna = Math.max(0, Math.min(coluna - Consts.RES / 2, Consts.MUNDO_LARGURA - Consts.RES));
         

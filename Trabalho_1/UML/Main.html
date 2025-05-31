@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Game Class Diagram</title>
+  <!-- 1) Include Mermaid's runtime -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+  <!-- 2) A tiny JS to initialize Mermaid on page load -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      mermaid.initialize({ 
+        startOnLoad: true,
+        securityLevel: 'loose'
+      });
+
+      document.getElementById('downloadBtn').addEventListener('click', function() {
+        downloadDiagram();
+      });
+    });
+
+    function downloadDiagram() {
+      const diagramContainer = document.querySelector('.mermaid-container');
+      
+      const loadingMsg = document.getElementById('loadingMsg');
+      loadingMsg.style.display = 'block';
+      
+      html2canvas(diagramContainer, {
+        backgroundColor: 'white',
+        scale: 2
+      }).then(function(canvas) {
+        const link = document.createElement('a');
+        link.download = 'class-diagram.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        loadingMsg.style.display = 'none';
+      }).catch(function(error) {
+        console.error('Error generating image:', error);
+        loadingMsg.style.display = 'none';
+        alert('Error generating image. See console for details.');
+      });
+    }
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .button-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .download-btn {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    .download-btn:hover {
+      background-color: #45a049;
+    }
+    .mermaid-container {
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .mermaid {
+      margin: 0;
+      padding: 0;
+    }
+    .info {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 15px;
+      background-color: #e6f7ff;
+      border-left: 4px solid #1890ff;
+      border-radius: 4px;
+    }
+    #loadingMsg {
+      display: none;
+      text-align: center;
+      margin: 10px 0;
+      font-style: italic;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Game Class Diagram</h1>
+  
+  <div class="info">
+    <p>This diagram shows the class hierarchy and relationships for the game. The diagram includes the base <code>Personagem</code> class and its various subclasses including <code>Hero</code>, villains, and collectible items.</p>
+    <p>The game supports custom villain loading from zip files, drag-and-drop functionality, and dynamic class loading for extensibility.</p>
+  </div>
+
+  <div class="button-container">
+    <button id="downloadBtn" class="download-btn">Download as PNG</button>
+    <div id="loadingMsg">Generating image, please wait...</div>
+  </div>
+
+  <!-- The Mermaid container -->
+  <div class="mermaid-container">
+    <pre class="mermaid">
+classDiagram
+  class Personagem {
+    %% abstract
+    #ImageIcon iImage
+    #Posicao pPosicao
+    #boolean bTransponivel
+    #boolean bMortal
+    +Personagem(String sNomeImagePNG)
+    +Posicao getPosicao()
+    +boolean isbTransponivel()
+    +void setbTransponivel(boolean)
+    +void autoDesenho()
+    +boolean setPosicao(int, int)
+    +boolean moveUp()
+    +boolean moveDown()
+    +boolean moveRight()
+    +boolean moveLeft()
+  }
+
+  class Hero {
+    -static boolean isGameOver
+    +Hero(String sNomeImagePNG)
+    +void voltaAUltimaPosicao()
+    +boolean setPosicao(int, int)
+    -boolean validaPosicao()
+    +boolean moveUp()
+    +boolean moveDown()
+    +boolean moveRight()
+    +boolean moveLeft()
+    +void morrer()
+    +static boolean isGameOver()
+    +static void resetGameOver()
+    +static void setGameOver(boolean)
+  }
+
+  class Villan_1 {
+    -boolean bRight
+    -static final double SCALE_FACTOR
+    -int steps
+    -int maxSteps
+    -static int totalVillans
+    -static int villansColetadas
+    -int moveCounter
+    -int moveRate
+    +Villan_1(String sNomeImagePNG)
+    +Villan_1(String sNomeImagePNG, int walkBlocks)
+    +Villan_1(String sNomeImagePNG, int walkBlocks, int moveRate)
+    -void resizeImage()
+    +void autoDesenho()
+    +static void mostrarSucesso()
+    +static void resetContadores()
+    +void matarHero(Hero hero)
+    +void setMoveRate(int)
+  }
+
+  class Villan_2 {
+    -boolean bRight
+  }
+
+  class Villan_3 {
+    -boolean bRight
+  }
+
+  class Coletavel {
+    %% interface
+    +boolean foiColetado()
+  }
+
+  class Fruta {
+    -boolean bRight
+    -static final double SCALE_FACTOR
+    -int steps
+    -int maxSteps
+    -static int totalFrutas
+    -static int frutasColetadas
+    -boolean coletada
+    +Fruta(String sNomeImagePNG)
+    +Fruta(String sNomeImagePNG, int walkSteps)
+    -void resizeImage()
+    +void autoDesenho()
+    +void coletar()
+    +static void verificarSucesso()
+    +static void mostrarSucesso()
+    +static void resetContadores()
+    +static void setContadores(int, int)
+    +boolean isColetada()
+    +boolean foiColetado()
+    +static void incrementarFrutasColetadas()
+    +static int getFrutasColetadas()
+    +static int getTotalFrutas()
+    +static void incrementarTotalFrutas()
+  }
+
+  class FrutaVert {
+    -boolean bVert
+  }
+
+  class Fireball {
+    -int direcao
+    -boolean ativo
+    -int velocidade
+    -int distanciaMaxima
+    -int distanciaPercorrida
+    +Fireball(String sNomeImagePNG, int direcao)
+    +void autoDesenho()
+    +boolean isAtivo()
+    +void setAtivo(boolean)
+    +void resetDistancia()
+  }
+
+  class Fogo {
+    -int duracao
+    -int contador
+    +Fogo(String sNomeImagePNG, int duracao)
+    +void autoDesenho()
+    +boolean isAtivo()
+  }
+
+  class Ice {
+    -int duracao
+  }
+
+  class GameState {
+    -static GameState instance
+    -int level
+    -int score
+    -GameState()
+    +static GameState getInstance()
+    +void incrementLevel()
+    +void resetLevel()
+    +int getLevel()
+    +void setScore(int)
+    +int getScore()
+  }
+
+  class FracassoNotification {
+    -String message
+  }
+
+  class SuccessoNotification {
+    -String message
+  }
+
+  class VillainLoader {
+    +static void loadFromZipFile(File zipFile)
+    +static void loadFromZipFile(File zipFile, int x, int y)
+    +static Personagem createVillainFromProperties(Properties props)
+  }
+
+  Personagem <|-- Hero
+  Personagem <|-- Villan_1
+  Personagem <|-- Villan_2
+  Personagem <|-- Villan_3
+  Personagem <|-- Fruta
+  Personagem <|-- FrutaVert
+  Personagem <|-- Fireball
+  Personagem <|-- Fogo
+  Personagem <|-- Ice
+
+  Coletavel <|.. Fruta
+  Coletavel <|.. FrutaVert
+    </pre>
+  </div>
+
+</body>
+</html>

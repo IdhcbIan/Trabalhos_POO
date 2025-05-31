@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Game Class Diagram</title>
+  <!-- 1) Include Mermaid's runtime -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+  <!-- 2) A tiny JS to initialize Mermaid on page load -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      mermaid.initialize({ 
+        startOnLoad: true,
+        securityLevel: 'loose'
+      });
+    });
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .mermaid {
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .info {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 15px;
+      background-color: #e6f7ff;
+      border-left: 4px solid #1890ff;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Game Class Diagram</h1>
+  
+  <div class="info">
+    <p>This diagram shows the class hierarchy and relationships for the game. The diagram includes the base <code>Personagem</code> class and its various subclasses including <code>Hero</code>, villains, and collectible items.</p>
+    <p>The game supports custom villain loading from zip files, drag-and-drop functionality, and dynamic class loading for extensibility.</p>
+  </div>
+
+  <!-- The Mermaid container -->
+  <pre class="mermaid">
+classDiagram
+  class Personagem {
+    %% abstract
+    #ImageIcon iImage
+    #Posicao pPosicao
+    #boolean bTransponivel
+    #boolean bMortal
+    +Personagem(String sNomeImagePNG)
+    +Posicao getPosicao()
+    +boolean isbTransponivel()
+    +void setbTransponivel(boolean)
+    +void autoDesenho()
+    +boolean setPosicao(int, int)
+    +boolean moveUp()
+    +boolean moveDown()
+    +boolean moveRight()
+    +boolean moveLeft()
+  }
+
+  class Hero {
+    -static boolean isGameOver
+    +Hero(String sNomeImagePNG)
+    +void voltaAUltimaPosicao()
+    +boolean setPosicao(int, int)
+    -boolean validaPosicao()
+    +boolean moveUp()
+    +boolean moveDown()
+    +boolean moveRight()
+    +boolean moveLeft()
+    +void morrer()
+    +static boolean isGameOver()
+    +static void resetGameOver()
+    +static void setGameOver(boolean)
+  }
+
+  class Villan_1 {
+    -boolean bRight
+    -static final double SCALE_FACTOR
+    -int steps
+    -int maxSteps
+    -static int totalVillans
+    -static int villansColetadas
+    -int moveCounter
+    -int moveRate
+    +Villan_1(String sNomeImagePNG)
+    +Villan_1(String sNomeImagePNG, int walkBlocks)
+    +Villan_1(String sNomeImagePNG, int walkBlocks, int moveRate)
+    -void resizeImage()
+    +void autoDesenho()
+    +static void mostrarSucesso()
+    +static void resetContadores()
+    +void matarHero(Hero hero)
+    +void setMoveRate(int)
+  }
+
+  class Villan_2 {
+    -boolean bRight
+  }
+
+  class Villan_3 {
+    -boolean bRight
+  }
+
+  class Coletavel {
+    %% interface
+    +boolean foiColetado()
+  }
+
+  class Fruta {
+    -boolean bRight
+    -static final double SCALE_FACTOR
+    -int steps
+    -int maxSteps
+    -static int totalFrutas
+    -static int frutasColetadas
+    -boolean coletada
+    +Fruta(String sNomeImagePNG)
+    +Fruta(String sNomeImagePNG, int walkSteps)
+    -void resizeImage()
+    +void autoDesenho()
+    +void coletar()
+    +static void verificarSucesso()
+    +static void mostrarSucesso()
+    +static void resetContadores()
+    +static void setContadores(int, int)
+    +boolean isColetada()
+    +boolean foiColetado()
+    +static void incrementarFrutasColetadas()
+    +static int getFrutasColetadas()
+    +static int getTotalFrutas()
+    +static void incrementarTotalFrutas()
+  }
+
+  class FrutaVert {
+    -boolean bVert
+  }
+
+  class Fireball {
+    -int direcao
+    -boolean ativo
+    -int velocidade
+    -int distanciaMaxima
+    -int distanciaPercorrida
+    +Fireball(String sNomeImagePNG, int direcao)
+    +void autoDesenho()
+    +boolean isAtivo()
+    +void setAtivo(boolean)
+    +void resetDistancia()
+  }
+
+  class Fogo {
+    -int duracao
+    -int contador
+    +Fogo(String sNomeImagePNG, int duracao)
+    +void autoDesenho()
+    +boolean isAtivo()
+  }
+
+  class Ice {
+    -int duracao
+  }
+
+  class GameState {
+    -static GameState instance
+    -int level
+    -int score
+    -GameState()
+    +static GameState getInstance()
+    +void incrementLevel()
+    +void resetLevel()
+    +int getLevel()
+    +void setScore(int)
+    +int getScore()
+  }
+
+  class FracassoNotification {
+    -String message
+  }
+
+  class SuccessoNotification {
+    -String message
+  }
+
+  class VillainLoader {
+    +static void loadFromZipFile(File zipFile)
+    +static void loadFromZipFile(File zipFile, int x, int y)
+    +static Personagem createVillainFromProperties(Properties props)
+  }
+
+  Personagem <|-- Hero
+  Personagem <|-- Villan_1
+  Personagem <|-- Villan_2
+  Personagem <|-- Villan_3
+  Personagem <|-- Fruta
+  Personagem <|-- FrutaVert
+  Personagem <|-- Fireball
+  Personagem <|-- Fogo
+  Personagem <|-- Ice
+
+  Coletavel <|.. Fruta
+  Coletavel <|.. FrutaVert
+  </pre>
+
+</body>
+</html>

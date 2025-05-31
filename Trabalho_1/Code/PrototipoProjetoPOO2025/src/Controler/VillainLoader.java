@@ -1,16 +1,12 @@
 package Controler;
 
-import Modelo.Villan_1;
-import Modelo.Villan_2;
-import Modelo.Villan_3;
+import Auxiliar.Consts;
+import Modelo.Fireball;
 import Modelo.Hero;
 import Modelo.Personagem;
-import Modelo.Fireball;
-import Auxiliar.Consts;
-import auxiliar.Posicao;
-
+import Modelo.Villan_1;
+import Modelo.Villan_2;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -25,9 +21,6 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-/**
- * Class responsible for loading villain characters from zip files
- */
 public class VillainLoader {
     private static final String TEMP_DIR = "temp_villains";
     
@@ -38,30 +31,20 @@ public class VillainLoader {
         this.controller = controller;
         this.hero = controller.getHero();
         
-        // Create temp directory if it doesn't exist
         File tempDir = new File(TEMP_DIR);
         if (!tempDir.exists()) {
             tempDir.mkdir();
         }
     }
     
-    /**
-     * Loads villains from a zip file and adds them to the game
-     * @param zipFilePath Path to the zip file containing villain data
-     * @return List of loaded villains
-     * @throws IOException If there's an error reading the zip file
-     */
     public ArrayList<Personagem> loadVillainsFromZip(String zipFilePath) throws IOException {
         ArrayList<Personagem> loadedVillains = new ArrayList<>();
         
         try (ZipFile zipFile = new ZipFile(zipFilePath)) {
-            // Extract config file first
             Map<String, Properties> villainConfigs = extractVillainConfigs(zipFile);
             
-            // Extract images
             extractVillainImages(zipFile);
             
-            // Create villains based on configs
             for (Map.Entry<String, Properties> entry : villainConfigs.entrySet()) {
                 String villainName = entry.getKey();
                 Properties config = entry.getValue();
@@ -71,28 +54,23 @@ public class VillainLoader {
                     loadedVillains.add(villain);
                     controller.addPersonagem(villain);
                     
-                    // Special handling for Villain_2 to ensure it's properly connected to the hero
                     if (villain instanceof Modelo.Villan_2) {
                         Modelo.Villan_2 v2 = (Modelo.Villan_2) villain;
                         v2.setTarget(hero);
                         
-                        // Force an initial processing to ensure it's properly initialized
                         if (!Hero.isGameOver() && !Modelo.SuccessoNotification.getInstance().isGameFreeze()) {
                             v2.processLogic();
                         }
                         
-                        // Add any pending fireballs
                         ArrayList<Fireball> fireballs = Villan_2.getPendingFireballs();
                         for (Fireball fireball : fireballs) {
                             controller.addPersonagem(fireball);
                         }
                     }
                     
-                    // Special handling for Villain_3 if it exists
                     try {
                         Class<?> villan3Class = Class.forName("Modelo.Villan_3");
                         if (villan3Class.isInstance(villain)) {
-                            // Use reflection to call setTarget if it exists
                             try {
                                 java.lang.reflect.Method setTarget = villan3Class.getMethod("setTarget", Hero.class);
                                 setTarget.invoke(villain, hero);
@@ -101,7 +79,6 @@ public class VillainLoader {
                             }
                         }
                     } catch (ClassNotFoundException e) {
-                        // Villan_3 class doesn't exist, that's fine
                     }
                 }
             }
@@ -110,9 +87,6 @@ public class VillainLoader {
         return loadedVillains;
     }
     
-    /**
-     * Extract villain configuration files from the zip
-     */
     private Map<String, Properties> extractVillainConfigs(ZipFile zipFile) throws IOException {
         Map<String, Properties> configs = new HashMap<>();
         
@@ -134,9 +108,6 @@ public class VillainLoader {
         return configs;
     }
     
-    /**
-     * Extract villain images from the zip to the imgs directory
-     */
     private void extractVillainImages(ZipFile zipFile) throws IOException {
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
@@ -145,16 +116,14 @@ public class VillainLoader {
             if (isImageFile(entry.getName())) {
                 String fileName = new File(entry.getName()).getName();
                 
-                // Get the correct path for the images directory
                 String imgsPath;
                 try {
                     imgsPath = new File(".").getCanonicalPath() + File.separator + "imgs";
                 } catch (IOException e) {
                     System.out.println("Error getting canonical path: " + e.getMessage());
-                    imgsPath = "imgs"; // Fallback
+                    imgsPath = "imgs"; 
                 }
                 
-                // Make sure the imgs directory exists
                 File imgDir = new File(imgsPath);
                 if (!imgDir.exists()) {
                     imgDir.mkdirs();
@@ -170,21 +139,16 @@ public class VillainLoader {
         }
     }
     
-    /**
-     * Create a villain based on the configuration
-     */
     protected Personagem createVillainFromConfig(String villainName, Properties config) {
         try {
             String className = config.getProperty("class");
             if (className == null) {
-                // Backward compatibility: use type if class is not specified
                 String type = config.getProperty("type");
                 if (type == null) {
                     System.out.println("Neither class nor type specified for " + villainName);
                     return null;
                 }
                 
-                // Convert type to class name
                 switch (type) {
                     case "villan_1":
                         className = "Modelo.Villan_1";
@@ -207,55 +171,47 @@ public class VillainLoader {
                 return null;
             }
             
-            // Check if the image file exists in the imgs directory
             String imgsPath;
             try {
                 imgsPath = new File(".").getCanonicalPath() + Consts.PATH;
             } catch (IOException e) {
                 System.out.println("Error getting canonical path: " + e.getMessage());
-                imgsPath = "imgs" + File.separator; // Fallback
+                imgsPath = "imgs" + File.separator; 
             }
             
             File imageFile = new File(imgsPath + imageName);
             if (!imageFile.exists()) {
                 System.out.println("Image file not found: " + imageFile.getAbsolutePath());
-                // Try to use a default image instead
-                imageName = "Villan_1.png"; // Default villain image
+                imageName = "Villan_1.png";
             } else {
                 System.out.println("Using image: " + imageFile.getAbsolutePath());
             }
             
-            // Parse linha and coluna with better error handling
             int linha = 1;
             int coluna = 1;
             
             try {
                 String linhaStr = config.getProperty("linha", "1").trim();
-                // Remove any comments (text after #)
                 if (linhaStr.contains("#")) {
                     linhaStr = linhaStr.substring(0, linhaStr.indexOf("#")).trim();
                 }
                 linha = Integer.parseInt(linhaStr);
             } catch (NumberFormatException e) {
                 System.out.println("Invalid linha value for " + villainName + ": " + e.getMessage());
-                // Use default value
                 linha = 1;
             }
             
             try {
                 String colunaStr = config.getProperty("coluna", "1").trim();
-                // Remove any comments (text after #)
                 if (colunaStr.contains("#")) {
                     colunaStr = colunaStr.substring(0, colunaStr.indexOf("#")).trim();
                 }
                 coluna = Integer.parseInt(colunaStr);
             } catch (NumberFormatException e) {
                 System.out.println("Invalid coluna value for " + villainName + ": " + e.getMessage());
-                // Use default value
                 coluna = 1;
             }
             
-            // Create the villain based on its type
             Personagem villain = null;
             
             if (className.equals("Modelo.Villan_1")) {
@@ -282,17 +238,14 @@ public class VillainLoader {
                     System.out.println("Invalid moveRate value for " + villainName + ": " + e.getMessage());
                 }
                 
-                // Create the villain directly
                 Villan_1 v1 = new Villan_1(imageName, walkBlocks, moveRate);
                 v1.setPosicao(linha, coluna);
                 villain = v1;
                 
             } else if (className.equals("Modelo.Villan_2")) {
-                // For Villan_2, we need to follow the exact same pattern as in Fases.java
                 Villan_2 v2 = new Villan_2(imageName);
                 v2.setPosicao(linha, coluna);
                 
-                // Set additional properties
                 int shootRate = 20;
                 boolean shootRight = true;
                 
@@ -316,7 +269,6 @@ public class VillainLoader {
                     System.out.println("Invalid shootRight value for " + villainName + ": " + e.getMessage());
                 }
                 
-                // Set the properties exactly as done in Fases.java
                 v2.setTarget(hero);
                 v2.setShootRate(shootRate);
                 v2.setShootDirection(shootRight);
@@ -325,18 +277,14 @@ public class VillainLoader {
                 
             } else if (className.equals("Modelo.Villan_3")) {
                 try {
-                    // Check if Villan_3 class exists
                     Class.forName("Modelo.Villan_3");
                     
-                    // Create Villan_3 instance using reflection
                     Class<?> villan3Class = Class.forName(className);
                     java.lang.reflect.Constructor<?> constructor = villan3Class.getConstructor(String.class);
                     villain = (Personagem) constructor.newInstance(imageName);
                     
-                    // Set position
                     villain.setPosicao(linha, coluna);
                     
-                    // Set additional properties using reflection
                     int moveRate = 1;
                     try {
                         String moveRateStr = config.getProperty("moveRate", "1").trim();
@@ -348,7 +296,6 @@ public class VillainLoader {
                         System.out.println("Invalid moveRate value for " + villainName + ": " + e.getMessage());
                     }
                     
-                    // Set target and moveRate using reflection
                     try {
                         java.lang.reflect.Method setTarget = villan3Class.getMethod("setTarget", Hero.class);
                         setTarget.invoke(villain, hero);
@@ -366,7 +313,6 @@ public class VillainLoader {
                     return null;
                 }
             } else {
-                // For other villain types, try to create with default constructor
                 try {
                     Class<?> villainClass = Class.forName(className);
                     java.lang.reflect.Constructor<?> constructor = villainClass.getConstructor(String.class);
@@ -386,9 +332,6 @@ public class VillainLoader {
         }
     }
     
-    /**
-     * Check if a file is an image based on its extension
-     */
     private boolean isImageFile(String fileName) {
         String lowerCaseName = fileName.toLowerCase();
         return lowerCaseName.endsWith(".png") || 
@@ -397,9 +340,6 @@ public class VillainLoader {
                lowerCaseName.endsWith(".gif");
     }
     
-    /**
-     * Clean up temporary files
-     */
     public void cleanup() {
         try {
             File tempDir = new File(TEMP_DIR);

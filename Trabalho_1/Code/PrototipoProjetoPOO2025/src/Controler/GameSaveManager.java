@@ -5,32 +5,18 @@ import Modelo.FrutaVert;
 import Modelo.GameState;
 import Modelo.Hero;
 import Modelo.Personagem;
-
 import java.io.*;
 import java.util.ArrayList;
 
-/**
- * Class responsible for saving and loading game state.
- * This class provides methods to serialize and deserialize the game state to/from a .dat file.
- */
 public class GameSaveManager {
     private static final String DEFAULT_SAVE_DIRECTORY = "saves";
     private static final String DEFAULT_SAVE_FILENAME = "gamestate.dat";
     
-    /**
-     * Saves the current game state to a file.
-     * 
-     * @param controller The TelaController containing the current game state
-     * @param fileName Optional custom filename, uses default if null
-     * @return true if save was successful, false otherwise
-     */
     public static boolean saveGame(TelaController controller, String fileName) {
-        // Use default filename if none provided
         if (fileName == null || fileName.trim().isEmpty()) {
             fileName = DEFAULT_SAVE_DIRECTORY + File.separator + DEFAULT_SAVE_FILENAME;
         }
         
-        // Create directory if it doesn't exist
         File saveDir = new File(DEFAULT_SAVE_DIRECTORY);
         if (!saveDir.exists()) {
             saveDir.mkdirs();
@@ -39,22 +25,17 @@ public class GameSaveManager {
         try (ObjectOutputStream out = new ObjectOutputStream(
                 new FileOutputStream(fileName))) {
             
-            // Create a GameState object with current state
             GameState state = new GameState();
             
-            // Save current level
             state.setCurrentLevel(controller.getFase().getLevel());
             
-            // Save hero position if hero exists
             if (controller.getHero() != null) {
                 state.setHeroPosition(controller.getHero().getPosicao());
                 state.setGameOver(Hero.isGameOver());
             }
             
-            // Save all characters in the current phase
             state.setFaseAtual(new ArrayList<>(controller.getFaseAtual()));
             
-            // Count fruits
             int frutasColetadas = 0;
             int frutasTotais = 0;
             
@@ -75,11 +56,9 @@ public class GameSaveManager {
             state.setFrutasColetadas(frutasColetadas);
             state.setFrutasTotais(frutasTotais);
             
-            // Write the object to file
             out.writeObject(state);
             System.out.println("Game saved successfully to " + fileName);
             
-            // Show save message in the UI if view is available
             if (controller.getView() != null) {
                 controller.getView().showSaveLoadMessage("Game saved successfully!");
             }
@@ -90,7 +69,6 @@ public class GameSaveManager {
             System.err.println("Error saving game: " + e.getMessage());
             e.printStackTrace();
             
-            // Show error message in the UI if view is available
             if (controller.getView() != null) {
                 controller.getView().showSaveLoadMessage("Error saving game!");
             }
@@ -99,25 +77,15 @@ public class GameSaveManager {
         }
     }
     
-    /**
-     * Loads a game state from a file.
-     * 
-     * @param controller The TelaController to load the game state into
-     * @param fileName Optional custom filename, uses default if null
-     * @return true if load was successful, false otherwise
-     */
     public static boolean loadGame(TelaController controller, String fileName) {
-        // Use default filename if none provided
         if (fileName == null || fileName.trim().isEmpty()) {
             fileName = DEFAULT_SAVE_DIRECTORY + File.separator + DEFAULT_SAVE_FILENAME;
         }
         
-        // Check if file exists
         File saveFile = new File(fileName);
         if (!saveFile.exists()) {
             System.err.println("Save file does not exist: " + fileName);
             
-            // Show error message in the UI if view is available
             if (controller.getView() != null) {
                 controller.getView().showSaveLoadMessage("Save file not found!");
             }
@@ -128,22 +96,16 @@ public class GameSaveManager {
         try (ObjectInputStream in = new ObjectInputStream(
                 new FileInputStream(fileName))) {
             
-            // Read the GameState object
             GameState state = (GameState) in.readObject();
             
-            // First, reset the fruit counters
             Fruta.resetContadores();
             
-            // IMPORTANT: We need to load the level first, but without using the saved state
-            // This is because carregarFase() resets everything
             int currentLevel = state.getCurrentLevel();
             controller.carregarFase(currentLevel);
             
-            // Now replace the current phase with the saved one
             controller.getFaseAtual().clear();
             controller.getFaseAtual().addAll(state.getFaseAtual());
             
-            // Make sure the hero reference is updated
             for (Personagem p : controller.getFaseAtual()) {
                 if (p instanceof Hero) {
                     controller.setHero((Hero) p);
@@ -151,14 +113,12 @@ public class GameSaveManager {
                 }
             }
             
-            // Restore game over state if needed
             if (state.isGameOver()) {
                 Hero.setGameOver(true);
             } else {
                 Hero.resetGameOver();
             }
             
-            // Count fruits and update static counters
             int normalFrutas = 0;
             int normalColetadas = 0;
             int vertFrutas = 0;
@@ -178,8 +138,6 @@ public class GameSaveManager {
                 }
             }
             
-            // Manually set the static counters to match the loaded state
-            // We need to use reflection since these are private static fields
             try {
                 java.lang.reflect.Field totalFrutasField = Fruta.class.getDeclaredField("totalFrutas");
                 totalFrutasField.setAccessible(true);
@@ -201,12 +159,10 @@ public class GameSaveManager {
                 e.printStackTrace();
             }
             
-            // Update camera to focus on hero if available
             if (controller.getCameraManager() != null && controller.getHero() != null) {
                 controller.getCameraManager().atualizaCamera(controller.getHero());
             }
             
-            // Update view if available
             if (controller.getView() != null) {
                 controller.getView().showSaveLoadMessage("Game loaded successfully!");
                 controller.getView().repaint();
@@ -219,7 +175,6 @@ public class GameSaveManager {
             System.err.println("Error loading game: " + e.getMessage());
             e.printStackTrace();
             
-            // Show error message in the UI if view is available
             if (controller.getView() != null) {
                 controller.getView().showSaveLoadMessage("Error loading game!");
             }

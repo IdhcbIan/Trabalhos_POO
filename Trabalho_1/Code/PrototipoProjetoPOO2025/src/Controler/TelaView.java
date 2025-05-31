@@ -5,7 +5,6 @@ import Auxiliar.Desenho;
 import Modelo.FracassoNotification;
 import Modelo.Fruta;
 import Modelo.FrutaVert;
-import Modelo.Hero;
 import Modelo.Personagem;
 import Modelo.SuccessoNotification;
 import java.awt.Color;
@@ -252,28 +251,22 @@ public class TelaView extends JFrame {
             controller.getControleDeJogo().desenhaTudo(controller.getFaseAtual());
         }
         
-        // Draw the fruit counter
         drawFruitCounter(g2);
         
-        // Draw the level indicator
         drawLevelIndicator(g2);
         
-        // Draw save/load message if active
         if (showSaveLoadMessage) {
             drawSaveLoadMessage(g2);
         }
         
-        // Draw the success notification if it's visible
         if (SuccessoNotification.getInstance().isVisible()) {
             SuccessoNotification.getInstance().draw(g2, getWidth(), getHeight());
         }
         
-        // Draw the failure notification if it's visible
         if (FracassoNotification.getInstance().isVisible()) {
             FracassoNotification.getInstance().draw(g2, getWidth(), getHeight());
         }
         
-        // Draw drag-over visual feedback
         if (dragOver) {
             drawDragOverFeedback(g2);
         }
@@ -291,7 +284,6 @@ public class TelaView extends JFrame {
         return controller;
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -311,14 +303,11 @@ public class TelaView extends JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
+    }
 
 
 
 
-    // Contador de Frutas!!
 
     private void drawFruitCounter(Graphics2D g2) {
         Font originalFont = g2.getFont();
@@ -341,7 +330,6 @@ public class TelaView extends JFrame {
             }
         }
 
-        // Calculate total number of fruits in the current phase
         int totalFrutas = 0;
         if (controller != null && controller.getFaseAtual() != null) {
             List<Personagem> faseAtual = controller.getFaseAtual();
@@ -352,10 +340,8 @@ public class TelaView extends JFrame {
             }
         }
         
-        // Calculate remaining fruits
         int frutasRestantes = totalFrutas - totalColetadas;
         
-        // Check if all fruits have been collected and show success notification
         if (frutasRestantes <= 0) {
             System.out.println("TelaView: No fruits remaining, showing success notification");
             SuccessoNotification.getInstance().showSuccessMessage("Level Complete!\nAll fruits collected!");
@@ -363,114 +349,86 @@ public class TelaView extends JFrame {
         
         String counterText = "Frutas restantes: " + frutasRestantes;
         
-        // Draw counter background
-        g2.setColor(new Color(0, 0, 0, 160)); // Semi-transparent black
+        g2.setColor(new Color(0, 0, 0, 160)); 
         g2.fillRoundRect(10, getHeight() - getInsets().bottom - 40, 
                 g2.getFontMetrics().stringWidth(counterText) + 20, 30, 10, 10);
         
-        // Draw counter text
         g2.setColor(Color.YELLOW);
         g2.drawString(counterText, 20, getHeight() - getInsets().bottom - 20);
         
-        // Restore original font and color
         g2.setFont(originalFont);
         g2.setColor(originalColor);
     }
     
-    /**
-     * Draws the level indicator in the top left corner of the screen
-     */
     private void drawLevelIndicator(Graphics2D g2) {
         if (controller == null || controller.getFase() == null) {
-            return; // No level to display
+            return; 
         }
         
         Font originalFont = g2.getFont();
         Color originalColor = g2.getColor();
         
-        // Use the same font as the fruit counter
         Font levelFont = new Font("Arial", Font.BOLD, 16);
         g2.setFont(levelFont);
         
-        // Get the current level and max level (assuming 5 levels total)
         int currentLevel = controller.getFase().getLevel();
         int maxLevel = 5;
         
         String levelText = "Level: " + currentLevel + "/" + maxLevel;
         
-        // Draw level indicator background
-        g2.setColor(new Color(0, 0, 0, 160)); // Semi-transparent black
+        g2.setColor(new Color(0, 0, 0, 160)); 
         g2.fillRoundRect(10, 10, 
                 g2.getFontMetrics().stringWidth(levelText) + 20, 30, 10, 10);
         
-        // Draw level indicator text
-        g2.setColor(Color.CYAN); // Different color from fruit counter
+        g2.setColor(Color.CYAN);
         g2.drawString(levelText, 20, 30);
         
-        // Restore original font and color
         g2.setFont(originalFont);
         g2.setColor(originalColor);
     }
     
-    /**
-     * Draws the save/load status message
-     */
     private void drawSaveLoadMessage(Graphics2D g2) {
         Font originalFont = g2.getFont();
         Color originalColor = g2.getColor();
         
-        // Use a larger font for the save/load message
         Font messageFont = new Font("Arial", Font.BOLD, 18);
         g2.setFont(messageFont);
         
-        // Calculate the position (center of screen)
         int textWidth = g2.getFontMetrics().stringWidth(saveLoadMessage);
         int x = (getWidth() - textWidth) / 2;
-        int y = 60; // Position below the level indicator
+        int y = 60; 
         
-        // Draw message background
-        g2.setColor(new Color(0, 0, 0, 180)); // Semi-transparent black
+        g2.setColor(new Color(0, 0, 0, 180)); 
         g2.fillRoundRect(x - 10, y - 20, textWidth + 20, 30, 10, 10);
         
-        // Draw message text
-        g2.setColor(Color.GREEN); // Green for save/load messages
+        g2.setColor(Color.GREEN);
         g2.drawString(saveLoadMessage, x, y);
         
-        // Restore original font and color
         g2.setFont(originalFont);
         g2.setColor(originalColor);
     }
     
-    /**
-     * Draws visual feedback when dragging a file over the game window
-     */
     private void drawDragOverFeedback(Graphics2D g2) {
         Font originalFont = g2.getFont();
         Color originalColor = g2.getColor();
         
-        // Draw a semi-transparent overlay
         g2.setColor(new Color(0, 100, 255, 50));
         g2.fillRect(0, 0, getWidth(), getHeight());
         
-        // Draw a message
         String message = "Drop ZIP file to add villains";
         Font messageFont = new Font("Arial", Font.BOLD, 24);
         g2.setFont(messageFont);
         
-        // Calculate the position (center of screen)
         int textWidth = g2.getFontMetrics().stringWidth(message);
         int x = (getWidth() - textWidth) / 2;
         int y = getHeight() / 2;
         
-        // Draw message background
         g2.setColor(new Color(0, 0, 0, 180));
         g2.fillRoundRect(x - 10, y - 30, textWidth + 20, 40, 15, 15);
         
-        // Draw message text
         g2.setColor(Color.WHITE);
         g2.drawString(message, x, y);
         
-        // Restore original font and color
         g2.setFont(originalFont);
         g2.setColor(originalColor);
     }
