@@ -31,11 +31,9 @@ public abstract class Personagem implements Serializable {
 
             int newWidth, newHeight;
             if (aspectRatio > 1) {
-                // Image is wider than tall
                 newWidth = Consts.CELL_SIDE;
                 newHeight = (int) (Consts.CELL_SIDE / aspectRatio);
             } else {
-                // Image is taller than wide
                 newHeight = Consts.CELL_SIDE;
                 newWidth = (int) (Consts.CELL_SIDE * aspectRatio);
             }

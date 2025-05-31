@@ -1,13 +1,9 @@
 package Modelo;
 
+import auxiliar.Posicao;
 import java.io.Serializable;
 import java.util.ArrayList;
-import auxiliar.Posicao;
 
-/**
- * Class responsible for storing the game state for serialization.
- * This class encapsulates all the data needed to restore a game session.
- */
 public class GameState implements Serializable {
     private static final long serialVersionUID = 1L;
     
@@ -18,11 +14,9 @@ public class GameState implements Serializable {
     private Posicao heroPosition;
     private boolean gameOver;
     
-    // Constructor
     public GameState() {
     }
     
-    // Getters and Setters
     public ArrayList<Personagem> getFaseAtual() {
         return faseAtual;
     }

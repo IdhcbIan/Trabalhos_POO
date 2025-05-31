@@ -13,7 +13,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class Hero extends Personagem implements Serializable{
-    // Make this static so it can be accessed by all game elements
     private static boolean isGameOver = false;
     
     public Hero(String sNomeImagePNG) {
@@ -25,7 +24,6 @@ public class Hero extends Personagem implements Serializable{
     }
     
     public boolean setPosicao(int linha, int coluna){
-        // Don't allow position changes if the game is over
         if (isGameOver) {
             return false;
         }
@@ -39,7 +37,6 @@ public class Hero extends Personagem implements Serializable{
         return false;       
     }
 
-    /*TO-DO: este metodo pode ser interessante a todos os personagens que se movem*/
     private boolean validaPosicao(){
         if (!Desenho.acessoATelaDoJogo().ehPosicaoValida(this.getPosicao())) {
             this.voltaAUltimaPosicao();
@@ -49,55 +46,50 @@ public class Hero extends Personagem implements Serializable{
     }
     
     public boolean moveUp() {
-        if (isGameOver) return false;  // Don't move if game over
+        if (isGameOver) return false;  
         if(super.moveUp())
             return validaPosicao();
         return false;
     }
 
     public boolean moveDown() {
-        if (isGameOver) return false;  // Don't move if game over
+        if (isGameOver) return false;  
         if(super.moveDown())
             return validaPosicao();
         return false;
     }
 
     public boolean moveRight() {
-        if (isGameOver) return false;  // Don't move if game over
+        if (isGameOver) return false;  
         if(super.moveRight())
             return validaPosicao();
         return false;
     }
 
     public boolean moveLeft() {
-        if (isGameOver) return false;  // Don't move if game over
+        if (isGameOver) return false;  
         if(super.moveLeft())
             return validaPosicao();
         return false;
     }    
     
     public void morrer() {
-        // Set the game over flag
         isGameOver = true;
-        System.out.println("Game Over flag set to: " + isGameOver); // Debug message
+        System.out.println("Game Over flag set to: " + isGameOver); 
         
-        // Display the failure message with restart instruction
         FracassoNotification notification = FracassoNotification.getInstance();
         notification.showFailureMessage("Game Over!\nPress R to restart");
-        System.out.println("FracassoNotification visibility: " + notification.isVisible()); // Debug message
+        System.out.println("FracassoNotification visibility: " + notification.isVisible()); 
     }
     
-    // Add static method to check if game is over
     public static boolean isGameOver() {
         return isGameOver;
     }
     
-    // Add static method to reset game over state
     public static void resetGameOver() {
         isGameOver = false;
     }
     
-    // Add static method to set game over state (used when loading a saved game)
     public static void setGameOver(boolean gameOver) {
         isGameOver = gameOver;
     }

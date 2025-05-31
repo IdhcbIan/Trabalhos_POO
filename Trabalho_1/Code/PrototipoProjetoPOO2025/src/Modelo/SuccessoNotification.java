@@ -13,8 +13,8 @@ public class SuccessoNotification {
     private int displayTime = 0;
     private final int MAX_DISPLAY_TIME = 120; 
     private boolean gameFreeze = false;
-    private boolean isLevelCompletion = false; // Flag to determine if this is a level completion notification
-    private boolean playerInvulnerable = false; // New flag to make player invulnerable
+    private boolean isLevelCompletion = false; 
+    private boolean playerInvulnerable = false; 
     
     private SuccessoNotification() {}
     
@@ -29,10 +29,9 @@ public class SuccessoNotification {
         this.message = message;
         this.isVisible = true;
         this.displayTime = 0;
-        this.gameFreeze = true; // Freeze the game when success notification appears
-        this.playerInvulnerable = true; // Make player invulnerable when success notification appears
+        this.gameFreeze = true; 
+        this.playerInvulnerable = true; 
         
-        // Check if this is a level completion message
         this.isLevelCompletion = message.contains("Level Complete") || 
                                 message.contains("All fruits collected") ||
                                 message.contains("Congratulations") ||
@@ -62,7 +61,7 @@ public class SuccessoNotification {
     public void hide() {
         this.isVisible = false;
         this.gameFreeze = false;
-        this.playerInvulnerable = false; // Reset invulnerability when hiding notification
+        this.playerInvulnerable = false; 
         System.out.println("DEBUG: SuccessoNotification.hide called");
     }
     
@@ -80,17 +79,16 @@ public class SuccessoNotification {
             return;
         }
         
-        // Draw semi-transparent black overlay
+        // Desenhando O Overlay Semi-Transparente
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, screenWidth, screenHeight);
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
         
-        // Draw success message
+        // Dresenhando mensagem de sucesso
         g2d.setColor(Color.GREEN);
         g2d.setFont(new Font("Arial", Font.BOLD, 24));
         
-        // Split message by newlines
         String[] lines = message.split("\n");
         FontMetrics fm = g2d.getFontMetrics();
         
@@ -104,7 +102,7 @@ public class SuccessoNotification {
             y += fm.getHeight();
         }
         
-        // Draw instruction based on notification type
+        // Desenhando instrução baseada
         g2d.setFont(new Font("Arial", Font.PLAIN, 16));
         String instruction;
         

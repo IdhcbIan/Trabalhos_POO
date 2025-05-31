@@ -45,12 +45,6 @@ public class FracassoNotification {
         }
     }
     
-    /**
-     * Draw the failure notification on the screen
-     * @param g2d The Graphics2D context to draw on
-     * @param screenWidth The width of the screen
-     * @param screenHeight The height of the screen
-     */
     public void draw(Graphics2D g2d, int screenWidth, int screenHeight) {
         if (!isVisible) {
             return;
@@ -59,17 +53,15 @@ public class FracassoNotification {
         System.out.println("FracassoNotification: Drawing message: " + message + 
                           ", Screen dimensions: " + screenWidth + "x" + screenHeight);
         
-        // Draw semi-transparent black overlay
+        // Semi-Trasparente
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, screenWidth, screenHeight);
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
         
-        // Draw failure message
         g2d.setColor(Color.RED);
         g2d.setFont(new Font("Arial", Font.BOLD, 48));
         
-        // Split message by newlines
         String[] lines = message.split("\n");
         FontMetrics fm = g2d.getFontMetrics();
         
@@ -93,7 +85,6 @@ public class FracassoNotification {
     }
     
     /**
-     * Legacy render method for backward compatibility
      * @deprecated Use draw(Graphics2D, int, int) instead
      */
     @Deprecated
@@ -101,7 +92,6 @@ public class FracassoNotification {
         if (!isVisible) return;
         
         System.out.println("FracassoNotification: Legacy render method called, forwarding to draw method");
-        // Call the new draw method with a Graphics2D object
         draw((Graphics2D) g, width, height);
     }
     

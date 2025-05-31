@@ -17,7 +17,7 @@ public class Main {
                 view.setController(controller);
                 view.setCameraManager(cam);
                 
-                controller.carregarFase(5);
+                controller.carregarFase(1);
                 
                 view.setVisible(true);
                 view.go();    

@@ -10,13 +10,13 @@ public class Fruta extends Personagem implements Serializable, Coletavel {
     private boolean bRight;
     private static final double SCALE_FACTOR = 0.8; 
     private int steps;
-    private int maxSteps = 3;  // Default value
-    private static int totalFrutas = 0;  // Track total fruits
-    private static int frutasColetadas = 0;  // Track collected fruits
-    private boolean coletada = false;  // Track if this fruit has been collected
+    private int maxSteps = 3; 
+    private static int totalFrutas = 0;  
+    private static int frutasColetadas = 0;  
+    private boolean coletada = false;  
 
     public Fruta(String sNomeImagePNG) {
-        this(sNomeImagePNG, 3);  // Call the new constructor with default value
+        this(sNomeImagePNG, 3);  
     }
     
     public Fruta(String sNomeImagePNG, int walkSteps) {
@@ -25,7 +25,7 @@ public class Fruta extends Personagem implements Serializable, Coletavel {
         steps = 0;
         maxSteps = walkSteps;
         resizeImage();
-        totalFrutas++;  // Increment total fruits when a new one is created
+        totalFrutas++;  
     }
     
     private void resizeImage() {
@@ -44,7 +44,6 @@ public class Fruta extends Personagem implements Serializable, Coletavel {
     }
     
     public void autoDesenho(){
-        // Only move if the game is not over
         if (!Hero.isGameOver()) {
             if(bRight)
                 this.setPosicao(pPosicao.getLinha(), pPosicao.getColuna()+1);
@@ -58,11 +57,9 @@ public class Fruta extends Personagem implements Serializable, Coletavel {
             }
         }
         
-        // Always draw the fruit, even when game is over
         super.autoDesenho();
     }
 
-    // Modified method to handle fruit collection
     public void coletar() {
         if (!coletada) {
             coletada = true;
@@ -72,7 +69,6 @@ public class Fruta extends Personagem implements Serializable, Coletavel {
         }
     }
     
-    // Modified method to check for success
     public static void verificarSucesso() {
         int total = Fruta.getTotalFrutas() + FrutaVert.getTotalFrutasVert();
         int coletadas = Fruta.getFrutasColetadas() + FrutaVert.getFrutasVertColetadas();
@@ -81,20 +77,16 @@ public class Fruta extends Personagem implements Serializable, Coletavel {
         }
     }
     
-    // Modified method to show success message in the middle of the screen
     public static void mostrarSucesso() {
-        // Create a reference to the notification system
         SuccessoNotification.getInstance().showSuccessMessage("SUCESSO!!");
     }
     
-    // Add method to manually reset counters if needed
     public static void resetContadores() {
         System.out.println("DEBUG: Resetting fruit counters");
         totalFrutas = 0;
         frutasColetadas = 0;
     }
     
-    // Add method to set counters directly (for loading saved games)
     public static void setContadores(int total, int coletadas) {
         System.out.println("DEBUG: Setting fruit counters to total=" + total + ", coletadas=" + coletadas);
         totalFrutas = total;
@@ -110,7 +102,6 @@ public class Fruta extends Personagem implements Serializable, Coletavel {
         return isColetada();
     }
 
-    // Add this method to allow FrutaVert to increment collected count
     public static void incrementarFrutasColetadas() {
         frutasColetadas++;
         System.out.println("Fruta coletada via incrementarFrutasColetadas! Total: " + frutasColetadas + " de " + totalFrutas);
@@ -124,7 +115,6 @@ public class Fruta extends Personagem implements Serializable, Coletavel {
         return totalFrutas;
     }
 
-    // Add this method for adding to the total
     public static void incrementarTotalFrutas() {
         totalFrutas++;
     }

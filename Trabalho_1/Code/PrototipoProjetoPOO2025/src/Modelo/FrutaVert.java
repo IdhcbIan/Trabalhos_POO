@@ -7,27 +7,26 @@ import java.io.Serializable;
 import javax.swing.ImageIcon;
 
 public class FrutaVert extends Personagem implements Serializable, Coletavel {
-    private boolean bDown;  // Changed from bRight to bDown
+    private boolean bDown;  
     private static final double SCALE_FACTOR = 0.8; 
     private int steps;
-    private int maxSteps = 3;  // Default value
-    private boolean coletada = false;  // Track if this fruit has been collected
-    // Add static counters for FrutaVert
+    private int maxSteps = 3;  
+    private boolean coletada = false;  
     private static int totalFrutasVert = 0;
     private static int frutasVertColetadas = 0;
 
     public FrutaVert(String sNomeImagePNG) {
-        this(sNomeImagePNG, 3);  // Call the new constructor with default value
+        this(sNomeImagePNG, 3);  
     }
     
     public FrutaVert(String sNomeImagePNG, int walkSteps) {
         super(sNomeImagePNG);
-        bDown = true;  // Start moving down
+        bDown = true;  
         steps = 0;
         maxSteps = walkSteps;
         resizeImage();
-        Fruta.incrementarTotalFrutas(); // <-- Existing line
-        totalFrutasVert++; // <-- Add this line
+        Fruta.incrementarTotalFrutas(); 
+        totalFrutasVert++; 
     }
     
     private void resizeImage() {
@@ -46,7 +45,6 @@ public class FrutaVert extends Personagem implements Serializable, Coletavel {
     }
     
     public void autoDesenho(){
-        // Only move if the game is not over
         if (!Hero.isGameOver()) {
             if(bDown)
                 this.setPosicao(pPosicao.getLinha()+1, pPosicao.getColuna());  // Move down
@@ -55,33 +53,29 @@ public class FrutaVert extends Personagem implements Serializable, Coletavel {
             
             steps++;
             if(steps >= maxSteps) {
-                bDown = !bDown;  // Switch direction
+                bDown = !bDown;  
                 steps = 0;
             }
         }
         
-        // Always draw the fruit, even when game is over
         super.autoDesenho();
     }
 
-    // Method to handle fruit collection
     public void coletar() {
         if (!coletada) {
             coletada = true;
-            Fruta.incrementarFrutasColetadas(); // Existing
-            frutasVertColetadas++; // <-- Add this line
+            Fruta.incrementarFrutasColetadas(); 
+            frutasVertColetadas++; 
             System.out.println("Fruta vertical coletada! Total coletadas: " + 
                                getFrutasVertColetadas() + " de " + getTotalFrutasVert());
-            Fruta.verificarSucesso(); // Use the verificarSucesso from Fruta class
+            Fruta.verificarSucesso(); 
         }
     }
 
-    // Add this method to allow FrutaVert to increment collected count
     public static void incrementarFrutasVertColetadas() {
         frutasVertColetadas++;
     }
     
-    // Add method to set counters directly (for loading saved games)
     public static void setContadores(int total, int coletadas) {
         System.out.println("DEBUG: Setting vertical fruit counters to total=" + total + ", coletadas=" + coletadas);
         totalFrutasVert = total;
@@ -97,7 +91,6 @@ public class FrutaVert extends Personagem implements Serializable, Coletavel {
         return isColetada();
     }
 
-    // Static getters for counters
     public static int getTotalFrutasVert() {
         return totalFrutasVert;
     }
