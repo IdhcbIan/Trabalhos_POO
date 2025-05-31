@@ -175,10 +175,40 @@ classDiagram
 
   class Villan_2 {
     -boolean bRight
+    -static final double SCALE_FACTOR
+    -int cooldown
+    -int maxCooldown
+    -static int totalVillans
+    -static int villansColetadas
+    -Random random
+    -Hero targetHero
+    -static ArrayList~Fireball~ pendingFireballs
+    +Villan_2(String sNomeImagePNG)
+    +void setTarget(Hero hero)
+    -void resizeImage()
+    +void autoDesenho()
+    -void shootFireball()
+    +static ArrayList~Fireball~ getPendingFireballs()
+    +static void mostrarSucesso()
+    +static void resetContadores()
+    +void matarHero(Hero hero)
+    +void setShootRate(int)
+    +void setShootDirection(boolean)
+    +void processLogic()
   }
 
   class Villan_3 {
     -boolean bRight
+    -static final double SCALE_FACTOR
+    -int moveCounter
+    -int moveRate
+    -Fogo fogo
+    +Villan_3(String sNomeImagePNG)
+    +Villan_3(String sNomeImagePNG, int moveRate)
+    -void resizeImage()
+    +void autoDesenho()
+    +void setMoveRate(int)
+    +void congelarTerreno()
   }
 
   class Coletavel {
@@ -212,20 +242,36 @@ classDiagram
   }
 
   class FrutaVert {
-    -boolean bVert
+    -boolean bDown
+    -static final double SCALE_FACTOR
+    -int steps
+    -int maxSteps
+    -boolean coletada
+    -static int totalFrutasVert
+    -static int frutasVertColetadas
+    +FrutaVert(String sNomeImagePNG)
+    +FrutaVert(String sNomeImagePNG, int walkSteps)
+    -void resizeImage()
+    +void autoDesenho()
+    +void coletar()
+    +static void incrementarFrutasVertColetadas()
+    +static void setContadores(int, int)
+    +boolean isColetada()
+    +boolean foiColetado()
+    +static int getTotalFrutasVert()
+    +static int getFrutasVertColetadas()
   }
 
   class Fireball {
-    -int direcao
-    -boolean ativo
-    -int velocidade
-    -int distanciaMaxima
-    -int distanciaPercorrida
-    +Fireball(String sNomeImagePNG, int direcao)
+    -int rowDirection
+    -int colDirection
+    -static final double SCALE_FACTOR
+    -int lifespan
+    -boolean shouldBeRemoved
+    -boolean firstFrame
+    +Fireball(String sNomeImagePNG, int rowDirection, int colDirection)
     +void autoDesenho()
-    +boolean isAtivo()
-    +void setAtivo(boolean)
-    +void resetDistancia()
+    +boolean shouldRemove()
   }
 
   class Fogo {
@@ -279,6 +325,8 @@ classDiagram
 
   Coletavel <|.. Fruta
   Coletavel <|.. FrutaVert
+
+  Villan_2 ..> Fireball : creates
     </pre>
   </div>
 
