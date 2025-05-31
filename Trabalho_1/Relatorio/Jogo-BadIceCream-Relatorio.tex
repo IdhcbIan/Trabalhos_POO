@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper,portuguese]{article}
+\documentclass[10pt,a4paper,portuguese]{article}
 
 \usepackage[brazil]{babel}
 \usepackage[utf8]{inputenc}
@@ -11,6 +11,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{mathtools}
+\usepackage{pdflscape}
 
 \usepackage{hyperref}
 \hypersetup{
@@ -66,11 +67,15 @@
         
     \subsection{Salvar e Carregar Partida}
         Para salvar seu progresso no jogo, precione a tecla \verb|F5|. Para carregar a informação salvada, precione a tecla \verb|F9|. Vale salientar que eventuais vilões adicionados à fase também serão salvos.
+
+\begin{landscape}
     \section{Diagrama de Classes UML}
     \begin{figure}[H]
         \centering
-        \includegraphics[width=1\textwidth]{class-diagram.png}
+        \includegraphics[width=++\linewidth]{class-diagram.png}
         \caption{Diagrama UML -- Projeto Bad Ice Cream}
         \label{fig:class-diagram}
     \end{figure}
+\end{landscape}
+
 \end{document}
