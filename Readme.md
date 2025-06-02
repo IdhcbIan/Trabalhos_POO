@@ -3,7 +3,7 @@
 ## Estrutura do Projeto
 
 ```tree
-PrototipoProjetoPOO2025/
+BadIceCream/
 ├── src/
 │   ├── Main.java                 # Ponto de entrada da aplicação
 │   ├── Modelo/                   # Entidades e modelos do jogo
@@ -36,29 +36,3 @@ Fase 2(Mapa 2, Vilao 1)
 Fase 1(Mapa 1, Vilao 2)
 Fase 1(Mapa 2, Vilao 2)
 Fase 1(Mapa 3, Vilao 3)
-
-//-----------------------
--> Oque Falta!!
-    - Mapa 2
-    - Mapa 3
-    - Vilao 3
-
-- Fase 1.
-    * Terminado!!
-
-- Fase 2
-    * Mapa 2
-    * Frutas colocar no lugar
-
-- Fase 3
-    * Terminado!!
-
-- Fase 4
-    * Mapa 2
-    * Vilao 2
-    * Frutas no lugar
-
-- Fase 5
-    * Mapa 3
-    * Vilao 3 (que segue)
-    * Frutas no lugar
