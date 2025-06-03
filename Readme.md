@@ -1,4 +1,4 @@
-# Trabalho - POO: Bad IceCream
+# Trabalho - POO: Bad Ice Cream
 
 ## Estrutura do Projeto
 
@@ -31,8 +31,8 @@ BadIceCream/
 - 3 Mapas 
 - 3 Viloes
 
-Fase 1(Mapa 1, Vilao 1)
-Fase 2(Mapa 2, Vilao 1)
-Fase 1(Mapa 1, Vilao 2)
-Fase 1(Mapa 2, Vilao 2)
-Fase 1(Mapa 3, Vilao 3)
+- Fase 1(Mapa 1, Vilao 1)
+- Fase 2(Mapa 2, Vilao 1)
+- Fase 1(Mapa 1, Vilao 2)
+- Fase 1(Mapa 2, Vilao 2)
+- Fase 1(Mapa 3, Vilao 3)
